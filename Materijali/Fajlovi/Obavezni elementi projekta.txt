@@ -1,0 +1,15 @@
+Obavezni elementi projekta:
+Opis:	Elementi koje je potrebno da sadrži projekat. 
+Obavezni elementi:	
+-	Upravljanje korisnicima zasnovano na rolama – Role Based Access Controll (RBAC) za pristup sistemu
+-	Upravljanje korisnicima (Administracija sistema) – operativni rad sa korisnicima
+-	Upravljanje sistemskim šifarnicima (Administracija sistema) – operativni rad sa sistemskim šifarnicima.
+-	Upravljanje korisničkim šifarnicima – operativni rad sa korisničkim šifarnicima.
+-	Teritorijalna organizacija – korištenje jedinstvene šeme teritorijalne organizacije.
+-	Ljudski resursi (kadrovska organizacije – radno osoblje i sistematizacija radnih mjesta) – upravljanje ljudskim resursima poslovnog sistema.
+-	Materijalno-tehnička sredstva – upravljanje inventarom poslovnog sistema (sitni inventar, inventar, vozni park i sl.).
+-	Organizaciona šema – organizaciona šema poslovnog sistema (po vertikalnim i horizontalnim nivoima organizacije).
+-	Vremenski zavisni podaci (mogućnost istorijskog prikaza podataka u slučaju promjene parametara sistema – npr. cijena, zakonskih legislativa, itd.).
+-	Izvještajni podsistem – kreiranje izvještaja za podršku operativnog rada iz djelokruga poslovnog sistema (godišnji, mjesečni, sedmični i dnevni izvještaji).
+NAPOMENA: U zavisnosti od djelokruga i aktuelnih zakonskih legislativa, neophodno je prilagoditi specifične elemente poslovnog sistema (sistemske i korisničke šifarnike, kao i druge elemente sistema).
+

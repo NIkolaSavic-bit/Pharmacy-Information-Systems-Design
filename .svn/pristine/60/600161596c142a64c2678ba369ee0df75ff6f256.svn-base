@@ -1,0 +1,2143 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<database xmlns="http://www.example.org/xml-db" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Konceptualni model sistema" xsi:schemaLocation="http://www.example.org/xml-db xml-db.xsd">
+    <connection address="78.28.157.8" database="PIS2026" database_type="MsSQL" password="EtfPIS2026G48129" port="1435" schema="pisg4" username="EtfPIS2026G4"/>
+    <package name="Organizaciona struktura">
+        <package name="Teritorijalno politička organizacija">
+            <table code="Država" name="Država">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Oznaka" group="0" name="Oznaka" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Država" refTable="Naseljeno mjesto"/>
+                </column>
+                <column visible="true" code="Naziv" group="0" name="Naziv" nullable="false" primary="false" size="120" type="varchar(120)"/>
+                <column visible="true" code="Datum osnivanja" group="0" name="Datum osnivanja" nullable="false" primary="false" size="" type="datetime"/>
+                <column visible="true" code="Glavni grad" group="0" name="Glavni grad" nullable="true" primary="false" size="" type="int">
+                    <references refColumn="Oznaka" refTable="Naseljeno mjesto"/>
+                </column>
+                <column visible="true" code="Državno uređenje" group="0" name="Državno uređenje" nullable="true" primary="false" size="1" type="char(1)">
+                    <references refColumn="Oznaka" refTable="Državno uređenje"/>
+                </column>
+                <column visible="true" code="Pozivni broj" group="0" name="Pozivni broj" nullable="true" primary="false" size="5" type="numeric(5)"/>
+                <column visible="true" code="Himna" group="0" name="Himna" nullable="true" primary="false" size="" type="varbinary(Max)"/>
+                <column visible="true" code="Grb" group="0" name="Grb" nullable="true" primary="false" size="" type="image"/>
+                <column visible="true" code="Zastava" group="0" name="Zastava" nullable="true" primary="false" size="" type="image"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiDrzavu(?,?,?,?,?,?,?,?,?)"/>
+                    <retrieve name="pisg4.usp_DohvatiDrzave"/>
+                    <retrieveById name="pisg4.usp_DohvatiDrzavuPoId(?)"/>
+                    <update name="pisg4.usp_AzurirajDrzavu(?,?,?,?,?,?,?,?,?)"/>
+                    <delete name="pisg4.usp_ObrisiDrzavu(?)"/>
+                </crud>
+            </table>
+            <table code="Region" name="Region">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Tip regiona" group="0" name="Tip regiona" nullable="false" primary="true" size="1" type="char(1)">
+                    <references refColumn="Oznaka" refTable="Tip regiona"/>
+                </column>
+                <column visible="true" code="Oznaka regiona" group="0" name="Oznaka regiona" nullable="false" primary="true" size="" type="smallint"/>
+                <column visible="true" code="Naziv regiona" group="0" name="Naziv regiona" nullable="false" primary="false" size="120" type="varchar(120)"/>
+                <column visible="true" code="Pripada državi" group="0" name="Pripada državi" nullable="true" primary="false" size="3" type="char(3)">
+                    <references refColumn="Oznaka" refTable="Država"/>
+                </column>
+                <column visible="true" code="Država sjedišta" group="0" name="Država sjedišta" nullable="true" primary="false" size="3" type="char(3)">
+                    <references refColumn="Država" refTable="Naseljeno mjesto"/>
+                </column>
+                <column visible="true" code="Administrativno sjedište" group="0" name="Administrativno sjedište" nullable="true" primary="false" size="" type="int">
+                    <references refColumn="Oznaka" refTable="Naseljeno mjesto"/>
+                </column>
+                <crud>
+                    <create name="pisg4.usp_UnesiRegion(?,?,?,?,?,?)"/>
+                    <retrieve name="pisg4.usp_DohvatiRegione"/>
+                    <retrieveById name="pisg4.usp_DohvatiRegionPoId(?,?)"/>
+                    <update name="pisg4.usp_AzurirajRegion(?,?,?,?,?,?)"/>
+                    <delete name="pisg4.usp_ObrisiRegion(?,?)"/>
+                </crud>
+            </table>
+            <table code="Glavni grad" name="Glavni grad">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Država" group="0" name="Država" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Oznaka" refTable="Država"/>
+                    <references refColumn="Država" refTable="Naseljeno mjesto"/>
+                </column>
+                <column visible="true" code="Glavni grad" group="0" name="Glavni grad" nullable="false" primary="true" size="" type="int">
+                    <references refColumn="Oznaka" refTable="Naseljeno mjesto"/>
+                </column>
+                <column visible="true" code="Redni broj" group="0" name="Redni broj" nullable="false" primary="true" size="1" type="numeric(1,0)"/>
+                <column visible="true" code="Od" group="0" name="Od" nullable="false" primary="false" size="" type="datetime"/>
+                <column visible="true" code="Do" group="0" name="Do" nullable="true" primary="false" size="" type="datetime"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiGlavniGrad(?,?,?,?,?)"/>
+                    <retrieve name="pisg4.usp_DohvatiGlavneGradove"/>
+                    <retrieveById name="pisg4.usp_DohvatiGlavniGradPoId(?,?,?)"/>
+                    <update name="pisg4.usp_AzurirajGlavniGrad(?,?,?,?,?)"/>
+                    <delete name="pisg4.usp_ObrisiGlavniGrad(?,?,?)"/>
+                </crud>
+            </table>
+            <table code="Tip regiona" name="Tip regiona">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Oznaka" group="0" name="Oznaka" nullable="false" primary="true" size="1" type="char(1)"/>
+                <column visible="true" code="Naziv" group="0" name="Naziv" nullable="false" primary="false" size="120" type="varchar(120)"/>
+                <column visible="true" code="Opis" group="0" name="Opis" nullable="true" primary="false" size="265" type="varchar(265)"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiTipRegiona(?,?,?)"/>
+                    <retrieve name="pisg4.usp_DohvatiTipoveRegiona"/>
+                    <retrieveById name="pisg4.usp_DohvatiTipRegionaPoId(?)"/>
+                    <update name="pisg4.usp_AzurirajTipRegiona(?,?,?)"/>
+                    <delete name="pisg4.usp_ObrisiTipRegiona(?)"/>
+                </crud>
+            </table>
+            <table code="Naseljeno mjesto" name="Naseljeno mjesto">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Država" group="0" name="Država" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Oznaka" refTable="Država"/>
+                </column>
+                <column visible="true" code="Oznaka" group="0" name="Oznaka" nullable="false" primary="true" size="" type="int"/>
+                <column visible="true" code="Naziv mjesta" group="0" name="Naziv mjesta" nullable="false" primary="false" size="120" type="varchar(120)"/>
+                <column visible="true" code="PTT oznaka" group="0" name="PTT oznaka" nullable="true" primary="false" size="12" type="varchar(12)"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiNaseljenoMjesto(?,?,?,?)"/>
+                    <retrieve name="pisg4.usp_DohvatiNaseljenaMjesta"/>
+                    <retrieveById name="pisg4.usp_DohvatiNaseljenoMjestoPoId(?,?)"/>
+                    <update name="pisg4.usp_AzurirajNaseljenoMjesto(?,?,?,?)"/>
+                    <delete name="pisg4.usp_ObrisiNaseljenoMjesto(?,?)"/>
+                </crud>
+            </table>
+            <table code="Opština" name="Opština">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Država" group="0" name="Država" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Oznaka" refTable="Država"/>
+                    <references refColumn="Država" refTable="Naseljeno mjesto"/>
+                </column>
+                <column visible="true" code="Oznaka opštine" group="0" name="Oznaka opštine" nullable="false" primary="true" size="3" type="numeric(3,0)"/>
+                <column visible="true" code="Naziv opštine" group="0" name="Naziv opštine" nullable="false" primary="false" size="120" type="varchar(120)"/>
+                <column visible="true" code="Sjedište opštine" group="0" name="Sjedište opštine" nullable="true" primary="false" size="" type="int">
+                    <references refColumn="Oznaka" refTable="Naseljeno mjesto"/>
+                </column>
+                <crud>
+                    <create name="pisg4.usp_UnesiOpstinu(?,?,?,?)"/>
+                    <retrieve name="pisg4.usp_DohvatiOpstine"/>
+                    <retrieveById name="pisg4.usp_DohvatiOpstinuPoId(?,?)"/>
+                    <update name="pisg4.usp_AzurirajOpstinu(?,?,?,?)"/>
+                    <delete name="pisg4.usp_ObrisiOpstinu(?,?)"/>
+                </crud>
+            </table>
+            <table code="Mjesna zajednica" name="Mjesna zajednica">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Država" group="0" name="Država" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Država" refTable="Opština"/>
+                    <references refColumn="Država" refTable="Naseljeno mjesto"/>
+                </column>
+                <column visible="true" code="Oznaka opštine" group="0" name="Oznaka opštine" nullable="false" primary="true" size="3" type="numeric(3,0)">
+                    <references refColumn="Oznaka opštine" refTable="Opština"/>
+                </column>
+                <column visible="true" code="Identifikator" group="0" name="Identifikator" nullable="false" primary="true" size="2" type="numeric(2,0)"/>
+                <column visible="true" code="Naziv mjesne zajednice" group="0" name="Naziv mjesne zajednice" nullable="false" primary="false" size="120" type="varchar(120)"/>
+                <column visible="true" code="Mjesna kancelarija" group="0" name="Mjesna kancelarija" nullable="true" primary="false" size="" type="int">
+                    <references refColumn="Oznaka" refTable="Naseljeno mjesto"/>
+                </column>
+                <crud>
+                    <create name="pisg4.usp_UnesiMjesnuZajednicu(?,?,?,?,?)"/>
+                    <retrieve name="pisg4.usp_DohvatiMjesneZajednice"/>
+                    <retrieveById name="pisg4.usp_DohvatiMjesnuZajednicuPoId(?,?,?)"/>
+                    <update name="pisg4.usp_AzurirajMjesnuZajednicu(?,?,?,?,?)"/>
+                    <delete name="pisg4.usp_ObrisiMjesnuZajednicu(?,?,?)"/>
+                </crud>
+            </table>
+            <table code="Sastav država" name="Sastav država">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Složena država" group="0" name="Složena država" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Oznaka" refTable="Država"/>
+                </column>
+                <column visible="true" code="Država članica" group="0" name="Država članica" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Oznaka" refTable="Država"/>
+                </column>
+                <column visible="true" code="Redni broj" group="0" name="Redni broj" nullable="false" primary="true" size="2" type="numeric(2,0)"/>
+                <column visible="true" code="Od" group="0" name="Od" nullable="false" primary="false" size="" type="datetime"/>
+                <column visible="true" code="Do" group="0" name="Do" nullable="true" primary="false" size="" type="datetime"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiSastavDrzava(?,?,?,?,?)"/>
+                    <retrieve name="pisg4.usp_DohvatiSastaveDrzava"/>
+                    <retrieveById name="pisg4.usp_DohvatiSastavDrzavaPoId(?,?,?)"/>
+                    <update name="pisg4.usp_AzurirajSastavDrzava(?,?,?,?,?)"/>
+                    <delete name="pisg4.usp_ObrisiSastavDrzava(?,?,?)"/>
+                </crud>
+            </table>
+            <table code="Državno uređenje" name="Državno uređenje">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Oznaka" group="0" name="Oznaka" nullable="false" primary="true" size="1" type="char(1)"/>
+                <column visible="true" code="Naziv" group="0" name="Naziv" nullable="false" primary="false" size="120" type="varchar(120)"/>
+                <column visible="true" code="Opis" group="0" name="Opis" nullable="true" primary="false" size="256" type="varchar(256)"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiDrzavnoUredjenje(?,?,?)"/>
+                    <retrieve name="pisg4.usp_DohvatiDrzavnaUredjenja"/>
+                    <retrieveById name="pisg4.usp_DohvatiDrzavnoUredjenjePoId(?)"/>
+                    <update name="pisg4.usp_AzurirajDrzavnoUredjenje(?,?,?)"/>
+                    <delete name="pisg4.usp_ObrisiDrzavnoUredjenje(?)"/>
+                </crud>
+            </table>
+            <table code="Istorija uređenja" name="Istorija uređenja">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Država" group="0" name="Država" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Oznaka" refTable="Država"/>
+                </column>
+                <column visible="true" code="Redni broj" group="0" name="Redni broj" nullable="false" primary="true" size="2" type="numeric(2,0)"/>
+                <column visible="true" code="Državno uređenje" group="0" name="Državno uređenje" nullable="false" primary="false" size="1" type="char(1)">
+                    <references refColumn="Oznaka" refTable="Državno uređenje"/>
+                </column>
+                <column visible="true" code="Od" group="0" name="Od" nullable="false" primary="false" size="" type="datetime"/>
+                <column visible="true" code="Do" group="0" name="Do" nullable="true" primary="false" size="" type="datetime"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiIstorijuUredjenja(?,?,?,?,?)"/>
+                    <retrieve name="pisg4.usp_DohvatiIstorijeUredjenja"/>
+                    <retrieveById name="pisg4.usp_DohvatiIstorijuUredjenjaPoId(?,?)"/>
+                    <update name="pisg4.usp_AzurirajIstorijuUredjenja(?,?,?,?,?)"/>
+                    <delete name="pisg4.usp_ObrisiIstorijuUredjenja(?,?)"/>
+                </crud>
+            </table>
+            <table code="Pravni nasljednik" name="Pravni nasljednik">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Nasljednica" group="0" name="Nasljednica" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Oznaka" refTable="Država"/>
+                </column>
+                <column visible="true" code="Nasljeđena" group="0" name="Nasljeđena" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Oznaka" refTable="Država"/>
+                </column>
+                <crud>
+                    <create name="pisg4.usp_UnesiPravnogNasljednika(?,?)"/>
+                    <retrieve name="pisg4.usp_DohvatiPravneNasljednike"/>
+                    <retrieveById name="pisg4.usp_DohvatiPravnogNasljednikaPoId(?,?)"/>
+                    <delete name="pisg4.usp_ObrisiPravnogNasljednika(?,?)"/>
+                </crud>
+            </table>
+            <table code="Sastav regiona" name="Sastav regiona">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Tip složenog regiona" group="0" name="Tip složenog regiona" nullable="false" primary="true" size="1" type="char(1)">
+                    <references refColumn="Tip regiona" refTable="Region"/>
+                </column>
+                <column visible="true" code="Složeni region" group="0" name="Složeni region" nullable="false" primary="true" size="" type="smallint">
+                    <references refColumn="Oznaka regiona" refTable="Region"/>
+                </column>
+                <column visible="true" code="Tip člana" group="0" name="Tip člana" nullable="false" primary="true" size="1" type="char(1)">
+                    <references refColumn="Tip regiona" refTable="Region"/>
+                </column>
+                <column visible="true" code="Region član" group="0" name="Region član" nullable="false" primary="true" size="" type="smallint">
+                    <references refColumn="Oznaka regiona" refTable="Region"/>
+                </column>
+                <crud>
+                    <create name="pisg4.usp_UnesiSastavRegiona(?,?,?,?)"/>
+                    <retrieve name="pisg4.usp_DohvatiSastaveRegiona"/>
+                    <retrieveById name="pisg4.usp_DohvatiSastavRegionaPoId(?,?,?,?)"/>
+                    <delete name="pisg4.usp_ObrisiSastavRegiona(?,?,?,?)"/>
+                </crud>
+            </table>
+            <table code="Obuhvata naselja" name="Obuhvata naselja">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Tip regiona" group="0" name="Tip regiona" nullable="false" primary="true" size="1" type="char(1)">
+                    <references refColumn="Tip regiona" refTable="Region"/>
+                </column>
+                <column visible="true" code="Oznaka regiona" group="0" name="Oznaka regiona" nullable="false" primary="true" size="" type="smallint">
+                    <references refColumn="Oznaka regiona" refTable="Region"/>
+                </column>
+                <column visible="true" code="Država" group="0" name="Država" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Država" refTable="Naseljeno mjesto"/>
+                </column>
+                <column visible="true" code="Naseljeno mjesto" group="0" name="Naseljeno mjesto" nullable="false" primary="true" size="" type="int">
+                    <references refColumn="Oznaka" refTable="Naseljeno mjesto"/>
+                </column>
+                <crud>
+                    <create name="pisg4.usp_UnesiObuhvataNaselja(?,?,?,?)"/>
+                    <retrieve name="pisg4.usp_DohvatiObuhvataNaselja"/>
+                    <retrieveById name="pisg4.usp_DohvatiObuhvataNaseljaPoId(?,?,?,?)"/>
+                    <delete name="pisg4.usp_ObrisiObuhvataNaselja(?,?,?,?)"/>
+                </crud>
+            </table>
+            <table code="Obuhvata opštine" name="Obuhvata opštine">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Država" group="0" name="Država" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Država" refTable="Naseljeno mjesto"/>
+                    <references refColumn="Država" refTable="Opština"/>
+                </column>
+                <column visible="true" code="Oznaka opštine" group="0" name="Oznaka opštine" nullable="false" primary="true" size="3" type="numeric(3,0)">
+                    <references refColumn="Oznaka opštine" refTable="Opština"/>
+                </column>
+                <column visible="true" code="Naseljeno mjesto" group="0" name="Naseljeno mjesto" nullable="false" primary="true" size="" type="int">
+                    <references refColumn="Oznaka" refTable="Naseljeno mjesto"/>
+                </column>
+                <crud>
+                    <create name="pisg4.usp_UnesiObuhvataOpstine(?,?,?)"/>
+                    <retrieve name="pisg4.usp_DohvatiObuhvataOpstine"/>
+                    <retrieveById name="pisg4.usp_DohvatiObuhvataOpstinePoId(?,?,?)"/>
+                    <delete name="pisg4.usp_ObrisiObuhvataOpstine(?,?,?)"/>
+                </crud>
+            </table>
+            <table code="Mjesno pokrivanje naselja" name="Mjesno pokrivanje naselja">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Država" group="0" name="Država" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Država" refTable="Naseljeno mjesto"/>
+                    <references refColumn="Država" refTable="Mjesna zajednica"/>
+                </column>
+                <column visible="true" code="Oznaka opštine" group="0" name="Oznaka opštine" nullable="false" primary="true" size="3" type="numeric(3,0)">
+                    <references refColumn="Oznaka opštine" refTable="Mjesna zajednica"/>
+                </column>
+                <column visible="true" code="Naseljeno mjesto" group="0" name="Naseljeno mjesto" nullable="false" primary="true" size="" type="int">
+                    <references refColumn="Oznaka" refTable="Naseljeno mjesto"/>
+                </column>
+                <column visible="true" code="Mjesna zajednica" group="0" name="Mjesna zajednica" nullable="false" primary="true" size="2" type="numeric(2,0)">
+                    <references refColumn="Identifikator" refTable="Mjesna zajednica"/>
+                </column>
+                <crud>
+                    <create name="pisg4.usp_UnesiMjesnoPokrivanjeNaselja(?,?,?,?)"/>
+                    <retrieve name="pisg4.usp_DohvatiMjesnaPokrivanjaNaselja"/>
+                    <retrieveById name="pisg4.usp_DohvatiMjesnoPokrivanjeNaseljaPoId(?,?,?,?)"/>
+                    <delete name="pisg4.usp_ObrisiMjesnoPokrivanjeNaselja(?,?,?,?)"/>
+                </crud>
+            </table>
+        </package>
+        <package name="Unutrašnja organizacija">
+            <table code="Izabrani tipovi organizacione jedinice" name="Izabrani tipovi organizacione jedinice">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Tip organizacione jedinice" group="0" name="Tip organizacione jedinice" nullable="false" primary="true" size="1" type="char(1)">
+                    <references refColumn="Oznaka" refTable="Tip organizacione jedinice"/>
+                </column>
+                <column visible="true" code="Država registracije" group="0" name="Država registracije" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Država registracije" refTable="Poslovni sistem"/>
+                </column>
+                <column visible="true" code="Poslovni sistem" group="0" name="Poslovni sistem" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Identifikator" refTable="Poslovni sistem"/>
+                </column>
+                <column visible="true" code="Aktivan" group="0" name="Aktivan" nullable="false" primary="false" size="" type="bit"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiIzabraniTipOrganizacioneJedinice(?,?,?,?)"/>
+                    <retrieve name="pisg4.usp_DohvatiIzabraneTipoveOrganizacioneJedinice"/>
+                    <retrieveById name="pisg4.usp_DohvatiIzabraniTipOrganizacioneJedinicePoId(?,?,?)"/>
+                    <delete name="pisg4.usp_ObrisiIzabraniTipOrganizacioneJedinice(?,?,?)"/>
+                </crud>
+            </table>
+            <table code="Tip organizacione jedinice" name="Tip organizacione jedinice">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Oznaka" group="0" name="Oznaka" nullable="false" primary="true" size="1" type="char(1)"/>
+                <column visible="true" code="Naziv" group="0" name="Naziv" nullable="false" primary="false" size="120" type="varchar(120)"/>
+                <column visible="true" code="Opis" group="0" name="Opis" nullable="true" primary="false" size="256" type="varchar(256)"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiTipOrganizacioneJedinice(?,?,?)"/>
+                    <retrieve name="pisg4.usp_DohvatiTipoveOrganizacioneJedinice"/>
+                    <retrieveById name="pisg4.usp_DohvatiTipOrganizacioneJedinicePoId(?)"/>
+                    <update name="pisg4.usp_AzurirajTipOrganizacioneJedinice(?,?,?)"/>
+                    <delete name="pisg4.usp_ObrisiTipOrganizacioneJedinice(?)"/>
+                </crud>
+            </table>
+            <table code="Poslovni sistem" name="Poslovni sistem">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Država registracije" group="0" name="Država registracije" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Oznaka" refTable="Država"/>
+                    <references refColumn="Država registracije sljedbenika" refTable="Poslovni sistem"/>
+                    <references refColumn="Država" refTable="Naseljeno mjesto"/>
+                </column>
+                <column visible="true" code="Identifikator" group="0" name="Identifikator" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Poslovni sistem sljedbenik" refTable="Poslovni sistem"/>
+                </column>
+                <column visible="true" code="Tip poslovnog sistema" group="0" name="Tip poslovnog sistema" nullable="false" primary="false" size="1" type="char(1)">
+                    <references refColumn="Oznaka" refTable="Tip poslovnog sistema"/>
+                </column>
+                <column visible="true" code="Sjedište poslovnog sistema" group="0" name="Sjedište poslovnog sistema" nullable="false" primary="false" size="" type="int">
+                    <references refColumn="Oznaka" refTable="Naseljeno mjesto"/>
+                </column>
+                <column visible="true" code="Naziv" group="0" name="Naziv" nullable="false" primary="false" size="120" type="varchar(120)"/>
+                <column visible="true" code="Adresa" group="0" name="Adresa" nullable="true" primary="false" size="120" type="varchar(120)"/>
+                <column visible="true" code="Telefon" group="0" name="Telefon" nullable="true" primary="false" size="11" type="varchar(11)"/>
+                <column visible="true" code="email" group="0" name="email" nullable="true" primary="false" size="60" type="varchar(60)"/>
+                <column visible="true" code="www" group="0" name="www" nullable="true" primary="false" size="120" type="varchar(120)"/>
+                <column visible="true" code="Registracioni broj" group="0" name="Registracioni broj" nullable="false" primary="false" size="10" type="char(10)"/>
+                <column visible="true" code="PIB" group="0" name="PIB" nullable="false" primary="false" size="11" type="char(11)"/>
+                <column visible="true" code="Datum registracije" group="0" name="Datum registracije" nullable="false" primary="false" size="" type="datetime"/>
+                <column visible="true" code="Datum zatvaranja" group="0" name="Datum zatvaranja" nullable="true" primary="false" size="" type="datetime"/>
+                <column visible="true" code="Memorandum" group="0" name="Memorandum" nullable="true" primary="false" size="" type="image"/>
+                <column visible="true" code="Logo" group="0" name="Logo" nullable="true" primary="false" size="" type="image"/>
+                <column visible="true" code="Pečat" group="0" name="Pečat" nullable="true" primary="false" size="" type="image"/>
+                <column visible="true" code="Digitalni potpis" group="0" name="Digitalni potpis" nullable="true" primary="false" size="" type="image"/>
+                <column visible="true" code="Država registracije sljedbenika" group="0" name="Država registracije sljedbenika" nullable="true" primary="false" size="3" type="char(3)">
+                    <references refColumn="Država registracije" refTable="Poslovni sistem"/>
+                </column>
+                <column visible="true" code="Poslovni sistem sljedbenik" group="0" name="Poslovni sistem sljedbenik" nullable="true" primary="false" size="" type="bigint">
+                    <references refColumn="Identifikator" refTable="Poslovni sistem"/>
+                </column>
+                <crud>
+                    <create name="pisg4.usp_UnesiPoslovniSistem(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"/>
+                    <retrieve name="pisg4.usp_DohvatiPoslovneSisteme"/>
+                    <retrieveById name="pisg4.usp_DohvatiPoslovniSistemPoId(?,?)"/>
+                    <update name="pisg4.usp_AzurirajPoslovniSistem(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"/>
+                    <delete name="pisg4.usp_ObrisiPoslovniSistem(?,?)"/>
+                </crud>
+            </table>
+            <table code="Organizaciona jedinica" name="Organizaciona jedinica">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Država registracije" group="0" name="Država registracije" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Država" refTable="Naseljeno mjesto"/>
+                    <references refColumn="Država registracije" refTable="Izabrani tipovi organizacione jedinice"/>
+                    <references refColumn="Država registracije" refTable="Poslovni sistem"/>
+                </column>
+                <column visible="true" code="Poslovni sistem" group="0" name="Poslovni sistem" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Poslovni sistem" refTable="Izabrani tipovi organizacione jedinice"/>
+                    <references refColumn="Identifikator" refTable="Poslovni sistem"/>
+                </column>
+                <column visible="true" code="Oznaka" group="0" name="Oznaka" nullable="false" primary="true" size="4" type="numeric(4)"/>
+                <column visible="true" code="Tip organizacione jedinice" group="0" name="Tip organizacione jedinice" nullable="false" primary="false" size="1" type="char(1)">
+                    <references refColumn="Tip organizacione jedinice" refTable="Izabrani tipovi organizacione jedinice"/>
+                </column>
+                <column visible="true" code="Sjedište organizacione jedinice" group="0" name="Sjedište organizacione jedinice" nullable="false" primary="false" size="" type="int">
+                    <references refColumn="Oznaka" refTable="Naseljeno mjesto"/>
+                </column>
+                <column visible="true" code="Naziv" group="0" name="Naziv" nullable="false" primary="false" size="120" type="varchar(120)"/>
+                <column visible="true" code="Adresa" group="0" name="Adresa" nullable="true" primary="false" size="120" type="varchar(120)"/>
+                <column visible="true" code="Telefon" group="0" name="Telefon" nullable="true" primary="false" size="11" type="varchar(11)"/>
+                <column visible="true" code="email" group="0" name="email" nullable="true" primary="false" size="60" type="varchar(60)"/>
+                <column visible="true" code="Drž_Oznaka" group="0" name="Drž_Oznaka" nullable="false" primary="false" size="3" type="char(3)"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiOrganizacionuJedinicu(?,?,?,?,?,?,?,?,?,?)"/>
+                    <retrieve name="pisg4.usp_DohvatiOrganizacioneJedinice"/>
+                    <retrieveById name="pisg4.usp_DohvatiOrganizacionuJedinicuPoId(?,?,?)"/>
+                    <update name="pisg4.usp_AzurirajOrganizacionuJedinicu(?,?,?,?,?,?,?,?,?,?)"/>
+                    <delete name="pisg4.usp_ObrisiOrganizacionuJedinicu(?,?,?)"/>
+                </crud>
+            </table>
+            <table code="Složena organizaciona jedinica" name="Složena organizaciona jedinica">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Država registracije" group="0" name="Država registracije" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Država registracije" refTable="Organizaciona jedinica"/>
+                    <references refColumn="Država registracije" refTable="Organizaciona jedinica"/>
+                </column>
+                <column visible="true" code="Poslovni sistem" group="0" name="Poslovni sistem" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Poslovni sistem" refTable="Organizaciona jedinica"/>
+                    <references refColumn="Poslovni sistem" refTable="Organizaciona jedinica"/>
+                </column>
+                <column visible="true" code="Složena jedinica" group="0" name="Složena jedinica" nullable="false" primary="true" size="4" type="numeric(4)">
+                    <references refColumn="Oznaka" refTable="Organizaciona jedinica"/>
+                </column>
+                <column visible="true" code="Jedinica u sastavu" group="0" name="Jedinica u sastavu" nullable="false" primary="true" size="4" type="numeric(4)">
+                    <references refColumn="Oznaka" refTable="Organizaciona jedinica"/>
+                </column>
+                <crud>
+                    <create name="pisg4.usp_UnesiSlozenuOrganizacionuJedinicu(?,?,?,?)"/>
+                    <retrieve name="pisg4.usp_DohvatiSlozeneOrganizacioneJedinice"/>
+                    <retrieveById name="pisg4.usp_DohvatiSlozenuOrganizacionuJedinicuPoId(?,?,?,?)"/>
+                    <delete name="pisg4.usp_ObrisiSlozenuOrganizacionuJedinicu(?,?,?,?)"/>
+                </crud>
+            </table>
+            <table code="Složeni poslovni sistem" name="Složeni poslovni sistem">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Matična država registracije" group="0" name="Matična država registracije" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Država registracije" refTable="Poslovni sistem"/>
+                </column>
+                <column visible="true" code="Matični poslovni sistem" group="0" name="Matični poslovni sistem" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Identifikator" refTable="Poslovni sistem"/>
+                </column>
+                <column visible="true" code="Država registracije članice" group="0" name="Država registracije članice" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Država registracije" refTable="Poslovni sistem"/>
+                </column>
+                <column visible="true" code="Poslovni sistem članica" group="0" name="Poslovni sistem članica" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Identifikator" refTable="Poslovni sistem"/>
+                </column>
+                <column visible="true" code="Redni broj" group="0" name="Redni broj" nullable="false" primary="true" size="1" type="numeric(1)"/>
+                <column visible="true" code="Tip složenog poslovnog sistema" group="0" name="Tip složenog poslovnog sistema" nullable="false" primary="false" size="1" type="char(1)">
+                    <references refColumn="Oznaka" refTable="Tip složenog poslovnog sistema"/>
+                </column>
+                <column visible="true" code="Od" group="0" name="Od" nullable="false" primary="false" size="" type="datetime"/>
+                <column visible="true" code="Do" group="0" name="Do" nullable="true" primary="false" size="" type="datetime"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiSlozeniPoslovniSistem(?,?,?,?,?,?,?,?)"/>
+                    <retrieve name="pisg4.usp_DohvatiSlozenePoslovneSisteme"/>
+                    <retrieveById name="pisg4.usp_DohvatiSlozeniPoslovniSistemPoId(?,?,?,?,?)"/>
+                    <update name="pisg4.usp_AzurirajSlozeniPoslovniSistem(?,?,?,?,?,?,?,?)"/>
+                    <delete name="pisg4.usp_ObrisiSlozeniPoslovniSistem(?,?,?,?,?)"/>
+                </crud>
+            </table>
+            <table code="Tip poslovnog sistema" name="Tip poslovnog sistema">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Oznaka" group="0" name="Oznaka" nullable="false" primary="true" size="1" type="char(1)"/>
+                <column visible="true" code="Naziv" group="0" name="Naziv" nullable="false" primary="false" size="120" type="varchar(120)"/>
+                <column visible="true" code="Opis" group="0" name="Opis" nullable="true" primary="false" size="256" type="varchar(256)"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiTipPoslovnogSistema(?,?,?)"/>
+                    <retrieve name="pisg4.usp_DohvatiTipovePoslovnogSistema"/>
+                    <retrieveById name="pisg4.usp_DohvatiTipPoslovnogSistemaPoId(?)"/>
+                    <update name="pisg4.usp_AzurirajTipPoslovnogSistema(?,?,?)"/>
+                    <delete name="pisg4.usp_ObrisiTipPoslovnogSistema(?)"/>
+                </crud>
+            </table>
+            <table code="Tip složenog poslovnog sistema" name="Tip složenog poslovnog sistema">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Oznaka" group="0" name="Oznaka" nullable="false" primary="true" size="1" type="char(1)"/>
+                <column visible="true" code="Naziv" group="0" name="Naziv" nullable="false" primary="false" size="120" type="varchar(120)"/>
+                <column visible="true" code="Opis" group="0" name="Opis" nullable="true" primary="false" size="256" type="varchar(256)"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiTipSlozenogPoslovnogSistema(?,?,?)"/>
+                    <retrieve name="pisg4.usp_DohvatiTipoveSlozenogPoslovnogSistema"/>
+                    <retrieveById name="pisg4.usp_DohvatiTipSlozenogPoslovnogSistemaPoId(?)"/>
+                    <update name="pisg4.usp_AzurirajTipSlozenogPoslovnogSistema(?,?,?)"/>
+                    <delete name="pisg4.usp_ObrisiTipSlozenogPoslovnogSistema(?)"/>
+                </crud>
+            </table>
+        </package>
+    </package>
+    <package name="Resursi poslovnog sistema">
+        <package name="Ljudski resursi">
+            <table code="Adresni podaci" name="Adresni podaci">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Država registracije" group="0" name="Država registracije" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Država registracije" refTable="Registar zaposlenih"/>
+                </column>
+                <column visible="true" code="Poslovni sistem" group="0" name="Poslovni sistem" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Poslovni sistem" refTable="Registar zaposlenih"/>
+                </column>
+                <column visible="true" code="Zaposleni" group="0" name="Zaposleni" nullable="false" primary="true" size="" type="int">
+                    <references refColumn="Redni broj evidencije" refTable="Registar zaposlenih"/>
+                </column>
+                <column visible="true" code="Tip" group="0" name="Tip" nullable="false" primary="true" size="1" type="char(1)"/>
+                <column visible="true" code="Redni broj" group="0" name="Redni broj" nullable="false" primary="true" size="" type="smallint"/>
+                <column visible="true" code="Država" group="0" name="Država" nullable="false" primary="false" size="3" type="char(3)">
+                    <references refColumn="Država" refTable="Naseljeno mjesto"/>
+                </column>
+                <column visible="true" code="Mjesto" group="0" name="Mjesto" nullable="false" primary="false" size="" type="int">
+                    <references refColumn="Oznaka" refTable="Naseljeno mjesto"/>
+                </column>
+                <column visible="true" code="Država poslodavca" group="0" name="Država poslodavca" nullable="true" primary="false" size="3" type="char(3)">
+                    <references refColumn="Država registracije" refTable="Poslovni sistem"/>
+                </column>
+                <column visible="true" code="Poslodavac" group="0" name="Poslodavac" nullable="true" primary="false" size="" type="bigint">
+                    <references refColumn="Identifikator" refTable="Poslovni sistem"/>
+                </column>
+                <column visible="true" code="Ulica" group="0" name="Ulica" nullable="true" primary="false" size="120" type="varchar(120)"/>
+                <column visible="true" code="Broj" group="0" name="Broj" nullable="true" primary="false" size="8" type="varchar(8)"/>
+                <column visible="true" code="Fiksni telefon" group="0" name="Fiksni telefon" nullable="true" primary="false" size="20" type="varchar(20)"/>
+                <column visible="true" code="Mobilni telefon" group="0" name="Mobilni telefon" nullable="true" primary="false" size="20" type="varchar(20)"/>
+                <column visible="true" code="email" group="0" name="email" nullable="true" primary="false" size="60" type="varchar(60)"/>
+                <column visible="true" code="www" group="0" name="www" nullable="true" primary="false" size="120" type="varchar(120)"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiAdresnePodatke(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"/>
+                    <retrieve name="pisg4.usp_DohvatiAdresnePodatke"/>
+                    <retrieveById name="pisg4.usp_DohvatiAdresnePodatkePoId(?,?,?,?,?)"/>
+                    <update name="pisg4.usp_AzurirajAdresnePodatke(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"/>
+                    <delete name="pisg4.usp_ObrisiAdresnePodatke(?,?,?,?,?)"/>
+                </crud>
+            </table>
+            <table code="Državljanstvo" name="Državljanstvo">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Država registracije" group="0" name="Država registracije" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Država registracije" refTable="Registar zaposlenih"/>
+                </column>
+                <column visible="true" code="Poslovni sistem" group="0" name="Poslovni sistem" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Poslovni sistem" refTable="Registar zaposlenih"/>
+                </column>
+                <column visible="true" code="Zaposleni" group="0" name="Zaposleni" nullable="false" primary="true" size="" type="int">
+                    <references refColumn="Redni broj evidencije" refTable="Registar zaposlenih"/>
+                </column>
+                <column visible="true" code="Državljanstvo" group="0" name="Državljanstvo" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Oznaka" refTable="Država"/>
+                </column>
+                <crud>
+                    <create name="pisg4.usp_UnesiDrzavljanstvo(?,?,?,?)"/>
+                    <retrieve name="pisg4.usp_DohvatiDrzavljanstva"/>
+                    <retrieveById name="pisg4.usp_DohvatiDrzavljanstvoPoId(?,?,?,?)"/>
+                    <delete name="pisg4.usp_ObrisiDrzavljanstvo(?,?,?,?)"/>
+                </crud>
+            </table>
+            <table code="Katalog radnih mjesta" name="Katalog radnih mjesta">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Država registracije" group="0" name="Država registracije" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Država registracije" refTable="Poslovni sistem"/>
+                </column>
+                <column visible="true" code="Poslovni sistem" group="0" name="Poslovni sistem" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Identifikator" refTable="Poslovni sistem"/>
+                </column>
+                <column visible="true" code="Oznaka" group="0" name="Oznaka" nullable="false" primary="true" size="4" type="numeric(4,0)"/>
+                <column visible="true" code="Naziv radnog mjesta" group="0" name="Naziv radnog mjesta" nullable="false" primary="false" size="120" type="varchar(120)"/>
+                <column visible="true" code="Planski broj izvršilaca" group="0" name="Planski broj izvršilaca" nullable="false" primary="false" size="3" type="numeric(3,0)"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiKatalogRadnihMjesta(?,?,?,?,?)"/>
+                    <retrieve name="pisg4.usp_DohvatiKatalogeRadnihMjesta"/>
+                    <retrieveById name="pisg4.usp_DohvatiKatalogRadnihMjestaPoId(?,?,?)"/>
+                    <update name="pisg4.usp_AzurirajKatalogRadnihMjesta(?,?,?,?,?)"/>
+                    <delete name="pisg4.usp_ObrisiKatalogRadnihMjesta(?,?,?)"/>
+                </crud>
+            </table>
+            <table code="Katalog zanimanja" name="Katalog zanimanja">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Država" group="0" name="Država" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Oznaka" refTable="Država"/>
+                </column>
+                <column visible="true" code="Zanimanje" group="0" name="Zanimanje" nullable="false" primary="true" size="" type="int"/>
+                <column visible="true" code="Naziv" group="0" name="Naziv" nullable="false" primary="false" size="120" type="varchar(120)"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiKatalogZanimanja(?,?,?)"/>
+                    <retrieve name="pisg4.usp_DohvatiKatalogeZanimanja"/>
+                    <retrieveById name="pisg4.usp_DohvatiKatalogZanimanjaPoId(?,?)"/>
+                    <update name="pisg4.usp_AzurirajKatalogZanimanja(?,?,?)"/>
+                    <delete name="pisg4.usp_ObrisiKatalogZanimanja(?,?)"/>
+                </crud>
+            </table>
+            <table code="Katalog zvanja" name="Katalog zvanja">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Drž_Oznaka" group="0" name="Država" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Oznaka" refTable="Država"/>
+                </column>
+                <column visible="true" code="Oznaka" group="0" name="Oznaka" nullable="false" primary="true" size="2" type="char(2)"/>
+                <column visible="true" code="Naziv" group="0" name="Naziv" nullable="false" primary="false" size="120" type="varchar(120)"/>
+                <column visible="true" code="Opis" group="0" name="Opis" nullable="true" primary="false" size="256" type="varchar(256)"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiKatalogZvanja(?,?,?,?)"/>
+                    <retrieve name="pisg4.usp_DohvatiKatalogeZvanja"/>
+                    <retrieveById name="pisg4.usp_DohvatiKatalogZvanjaPoId(?,?)"/>
+                    <update name="pisg4.usp_AzurirajKatalogZvanja(?,?,?,?)"/>
+                    <delete name="pisg4.usp_ObrisiKatalogZvanja(?,?)"/>
+                </crud>
+            </table>
+            <table code="Lista zvanja" name="Lista zvanja">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Drž_Oznaka" group="0" name="Država" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Drž_Oznaka" refTable="Katalog zvanja"/>
+                </column>
+                <column visible="true" code="Zvanje" group="0" name="Zvanje" nullable="false" primary="true" size="2" type="char(2)">
+                    <references refColumn="Oznaka" refTable="Katalog zvanja"/>
+                </column>
+                <column visible="true" code="Školska sprema" group="0" name="Školska sprema" nullable="false" primary="true" size="2" type="char(2)">
+                    <references refColumn="Oznaka" refTable="Školska sprema"/>
+                </column>
+                <column visible="true" code="Stepen" group="0" name="Stepen" nullable="false" primary="true" size="1" type="numeric(1)">
+                    <references refColumn="Stepen" refTable="Školska sprema"/>
+                </column>
+                <column visible="true" code="Nivo obrazovanja" group="0" name="Nivo obrazovanja" nullable="false" primary="true" size="" type="smallint">
+                    <references refColumn="Nivo obrazovanja" refTable="Školska sprema"/>
+                </column>
+                <crud>
+                    <create name="pisg4.usp_UnesiListuZvanja(?,?,?,?,?)"/>
+                    <retrieve name="pisg4.usp_DohvatiListeZvanja"/>
+                    <retrieveById name="pisg4.usp_DohvatiListuZvanjaPoId(?,?,?,?,?)"/>
+                    <delete name="pisg4.usp_ObrisiListuZvanja(?,?,?,?,?)"/>
+                </crud>
+            </table>
+            <table code="Registar zaposlenih" name="Registar zaposlenih">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Država registracije" group="0" name="Država registracije" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Država registracije" refTable="Poslovni sistem"/>
+                </column>
+                <column visible="true" code="Poslovni sistem" group="0" name="Poslovni sistem" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Identifikator" refTable="Poslovni sistem"/>
+                </column>
+                <column visible="true" code="Redni broj evidencije" group="0" name="Redni broj evidencije" nullable="false" primary="true" size="" type="int"/>
+                <column visible="true" code="Prezime" group="0" name="Prezime" nullable="false" primary="false" size="60" type="varchar(60)"/>
+                <column visible="true" code="Ime roditelja" group="0" name="Ime roditelja" nullable="true" primary="false" size="60" type="varchar(60)"/>
+                <column visible="true" code="Ime" group="0" name="Ime" nullable="false" primary="false" size="60" type="varchar(60)"/>
+                <column visible="true" code="Pol" group="0" name="Pol" nullable="false" primary="false" size="1" type="char(1)"/>
+                <column visible="true" code="Matični broj" group="0" name="Matični broj" nullable="true" primary="false" size="13" type="varchar(13)"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiRegistarZaposlenih(?,?,?,?,?,?,?,?)"/>
+                    <retrieve name="pisg4.usp_DohvatiRegistreZaposlenih"/>
+                    <retrieveById name="pisg4.usp_DohvatiRegistarZaposlenihPoId(?,?,?)"/>
+                    <update name="pisg4.usp_AzurirajRegistarZaposlenih(?,?,?,?,?,?,?,?)"/>
+                    <delete name="pisg4.usp_ObrisiRegistarZaposlenih(?,?,?)"/>
+                </crud>
+            </table>
+            <table code="Nivo obrazovanja" name="Nivo obrazovanja">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Stepen" group="0" name="Stepen" nullable="false" primary="true" size="1" type="numeric(1)"/>
+                <column visible="true" code="Nivo obrazovanja" group="0" name="Nivo obrazovanja" nullable="false" primary="true" size="" type="smallint"/>
+                <column visible="true" code="Naziv nivoa" group="0" name="Naziv nivoa" nullable="false" primary="false" size="120" type="varchar(120)"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiNivoObrazovanja(?,?,?)"/>
+                    <retrieve name="pisg4.usp_DohvatiNivoeObrazovanja"/>
+                    <retrieveById name="pisg4.usp_DohvatiNivoObrazovanjaPoId(?,?)"/>
+                    <update name="pisg4.usp_AzurirajNivoObrazovanja(?,?,?)"/>
+                    <delete name="pisg4.usp_ObrisiNivoObrazovanja(?,?)"/>
+                </crud>
+            </table>
+            <table code="Obrazuju za" name="Obrazuju za">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Država registracije" group="0" name="Država registracije" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Država registracije" refTable="Poslovni sistem"/>
+                </column>
+                <column visible="true" code="Poslovni sistem" group="0" name="Poslovni sistem" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Identifikator" refTable="Poslovni sistem"/>
+                </column>
+                <column visible="true" code="Školska sprema" group="0" name="Školska sprema" nullable="false" primary="true" size="2" type="char(2)">
+                    <references refColumn="Oznaka" refTable="Školska sprema"/>
+                </column>
+                <column visible="true" code="Stepen" group="0" name="Stepen" nullable="false" primary="true" size="1" type="numeric(1)">
+                    <references refColumn="Stepen" refTable="Školska sprema"/>
+                </column>
+                <column visible="true" code="Nivo obrazovanja" group="0" name="Nivo obrazovanja" nullable="false" primary="true" size="" type="smallint">
+                    <references refColumn="Nivo obrazovanja" refTable="Školska sprema"/>
+                </column>
+                <crud>
+                    <create name="pisg4.usp_UnesiObrazujuZa(?,?,?,?,?)"/>
+                    <retrieve name="pisg4.usp_DohvatiObrazujuZa"/>
+                    <retrieveById name="pisg4.usp_DohvatiObrazujuZaPoId(?,?,?,?,?)"/>
+                    <delete name="pisg4.usp_ObrisiObrazujuZa(?,?,?,?,?)"/>
+                </crud>
+            </table>
+            <table code="Podaci o obrazovanju" name="Podaci o obrazovanju">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Država registracije" group="0" name="Država registracije" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Država registracije" refTable="Registar zaposlenih"/>
+                    <references refColumn="Drž_Oznaka" refTable="Katalog zvanja"/>
+                </column>
+                <column visible="true" code="Poslovni sistem" group="0" name="Poslovni sistem" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Poslovni sistem" refTable="Registar zaposlenih"/>
+                </column>
+                <column visible="true" code="Zaposleni" group="0" name="Zaposleni" nullable="false" primary="true" size="" type="int">
+                    <references refColumn="Redni broj evidencije" refTable="Registar zaposlenih"/>
+                </column>
+                <column visible="true" code="Redni broj" group="0" name="Redni broj" nullable="false" primary="true" size="2" type="numeric(2,0)"/>
+                <column visible="true" code="Školska sprema" group="0" name="Školska sprema" nullable="false" primary="false" size="2" type="char(2)">
+                    <references refColumn="Oznaka" refTable="Školska sprema"/>
+                </column>
+                <column visible="true" code="Stepen" group="0" name="Stepen" nullable="false" primary="false" size="1" type="numeric(1)">
+                    <references refColumn="Stepen" refTable="Školska sprema"/>
+                </column>
+                <column visible="true" code="Nivo obrazovanja" group="0" name="Nivo obrazovanja" nullable="false" primary="false" size="" type="smallint">
+                    <references refColumn="Nivo obrazovanja" refTable="Školska sprema"/>
+                </column>
+                <column visible="true" code="Zvanje" group="0" name="Zvanje" nullable="false" primary="false" size="2" type="char(2)">
+                    <references refColumn="Oznaka" refTable="Katalog zvanja"/>
+                </column>
+                <column visible="true" code="Država obrazovne ustanove" group="0" name="Država obrazovne ustanove" nullable="true" primary="false" size="3" type="char(3)">
+                    <references refColumn="Država registracije" refTable="Poslovni sistem"/>
+                </column>
+                <column visible="true" code="Obrazovna ustanova" group="0" name="Obrazovna ustanova" nullable="true" primary="false" size="" type="bigint">
+                    <references refColumn="Identifikator" refTable="Poslovni sistem"/>
+                </column>
+                <column visible="true" code="Datum upisa" group="0" name="Datum upisa" nullable="false" primary="false" size="" type="datetime"/>
+                <column visible="true" code="Datum završetka" group="0" name="Datum završetka" nullable="false" primary="false" size="" type="datetime"/>
+                <column visible="true" code="Datum diplomiranja" group="0" name="Datum diplomiranja" nullable="true" primary="false" size="" type="datetime"/>
+                <column visible="true" code="Broj diplome" group="0" name="Broj diplome" nullable="true" primary="false" size="14" type="varchar(14)"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiPodatkeOObrazovanju(?,?,?,?,?,?,?,?,?,?,?,?,?,?)"/>
+                    <retrieve name="pisg4.usp_DohvatiPodatkeOObrazovanju"/>
+                    <retrieveById name="pisg4.usp_DohvatiPodatkeOObrazovanjuPoId(?,?,?,?)"/>
+                    <update name="pisg4.usp_AzurirajPodatkeOObrazovanju(?,?,?,?,?,?,?,?,?,?,?,?,?,?)"/>
+                    <delete name="pisg4.usp_ObrisiPodatkeOObrazovanju(?,?,?,?)"/>
+                </crud>
+            </table>
+            <table code="Potrebna školska sprema" name="Potrebna školska sprema">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Država registracije" group="0" name="Država registracije" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Država registracije" refTable="Katalog radnih mjesta"/>
+                </column>
+                <column visible="true" code="Poslovni sistem" group="0" name="Poslovni sistem" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Poslovni sistem" refTable="Katalog radnih mjesta"/>
+                </column>
+                <column visible="true" code="Radno mjesto" group="0" name="Radno mjesto" nullable="false" primary="true" size="4" type="numeric(4,0)">
+                    <references refColumn="Oznaka" refTable="Katalog radnih mjesta"/>
+                </column>
+                <column visible="true" code="Školska sprema" group="0" name="Školska sprema" nullable="false" primary="true" size="2" type="char(2)">
+                    <references refColumn="Oznaka" refTable="Školska sprema"/>
+                </column>
+                <column visible="true" code="Stepen" group="0" name="Stepen" nullable="false" primary="true" size="1" type="numeric(1)">
+                    <references refColumn="Stepen" refTable="Školska sprema"/>
+                </column>
+                <column visible="true" code="Nivo obrazovanja" group="0" name="Nivo obrazovanja" nullable="false" primary="true" size="" type="smallint">
+                    <references refColumn="Nivo obrazovanja" refTable="Školska sprema"/>
+                </column>
+                <crud>
+                    <create name="pisg4.usp_UnesiPotrebnuSkolskuSpremu(?,?,?,?,?,?)"/>
+                    <retrieve name="pisg4.usp_DohvatiPotrebneSkolskeSpreme"/>
+                    <retrieveById name="pisg4.usp_DohvatiPotrebnuSkolskuSpremuPoId(?,?,?,?,?,?)"/>
+                    <delete name="pisg4.usp_ObrisiPotrebnuSkolskuSpremu(?,?,?,?,?,?)"/>
+                </crud>
+            </table>
+            <table code="Potrebne spreme" name="Potrebne spreme">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Država" group="0" name="Država" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Država" refTable="Katalog zanimanja"/>
+                </column>
+                <column visible="true" code="Zanimanje" group="0" name="Zanimanje" nullable="false" primary="true" size="" type="int">
+                    <references refColumn="Zanimanje" refTable="Katalog zanimanja"/>
+                </column>
+                <column visible="true" code="Školska sprema" group="0" name="Školska sprema" nullable="false" primary="true" size="2" type="char(2)">
+                    <references refColumn="Oznaka" refTable="Školska sprema"/>
+                </column>
+                <column visible="true" code="Stepen" group="0" name="Stepen" nullable="false" primary="true" size="1" type="numeric(1)">
+                    <references refColumn="Stepen" refTable="Školska sprema"/>
+                </column>
+                <column visible="true" code="Nivo obrazovanja" group="0" name="Nivo obrazovanja" nullable="false" primary="true" size="" type="smallint">
+                    <references refColumn="Nivo obrazovanja" refTable="Školska sprema"/>
+                </column>
+                <crud>
+                    <create name="pisg4.usp_UnesiPotrebnuSpremu(?,?,?,?,?)"/>
+                    <retrieve name="pisg4.usp_DohvatiPotrebneSpreme"/>
+                    <retrieveById name="pisg4.usp_DohvatiPotrebnuSpremuPoId(?,?,?,?,?)"/>
+                    <delete name="pisg4.usp_ObrisiPotrebnuSpremu(?,?,?,?,?)"/>
+                </crud>
+            </table>
+            <table code="Raspored na radna mjesta" name="Raspored na radna mjesta">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Država registracije" group="0" name="Država registracije" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Država registracije" refTable="Organizaciona jedinica"/>
+                    <references refColumn="Država registracije" refTable="Katalog radnih mjesta"/>
+                    <references refColumn="Država registracije" refTable="Registar zaposlenih"/>
+                </column>
+                <column visible="true" code="Poslovni sistem" group="0" name="Poslovni sistem" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Poslovni sistem" refTable="Organizaciona jedinica"/>
+                    <references refColumn="Poslovni sistem" refTable="Katalog radnih mjesta"/>
+                    <references refColumn="Poslovni sistem" refTable="Registar zaposlenih"/>
+                </column>
+                <column visible="true" code="Zaposleni" group="0" name="Zaposleni" nullable="false" primary="true" size="" type="int">
+                    <references refColumn="Redni broj evidencije" refTable="Registar zaposlenih"/>
+                </column>
+                <column visible="true" code="Redni broj" group="0" name="Redni broj" nullable="false" primary="true" size="4" type="numeric(4,0)"/>
+                <column visible="true" code="Organizaciona jedinica" group="0" name="Organizaciona jedinica" nullable="true" primary="false" size="4" type="numeric(4)">
+                    <references refColumn="Oznaka" refTable="Organizaciona jedinica"/>
+                </column>
+                <column visible="true" code="Vrsta radnog odnosa" group="0" name="Vrsta radnog odnosa" nullable="false" primary="false" size="2" type="char(2)">
+                    <references refColumn="Oznaka" refTable="Vrsta radnog odnosa"/>
+                </column>
+                <column visible="true" code="Radno mjesto" group="0" name="Radno mjesto" nullable="false" primary="false" size="4" type="numeric(4,0)">
+                    <references refColumn="Oznaka" refTable="Katalog radnih mjesta"/>
+                </column>
+                <column visible="true" code="Od" group="0" name="Od" nullable="false" primary="false" size="" type="datetime"/>
+                <column visible="true" code="Do" group="0" name="Do" nullable="true" primary="false" size="" type="datetime"/>
+                <column visible="true" code="Staž godina" group="0" name="Staž godina" nullable="false" primary="false" size="2" type="numeric(2)"/>
+                <column visible="true" code="Staž mjeseci" group="0" name="Staž mjeseci" nullable="false" primary="false" size="2" type="numeric(2)"/>
+                <column visible="true" code="Staž dana" group="0" name="Staž dana" nullable="false" primary="false" size="2" type="numeric(2)"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiRasporedNaRadnaMjesta(?,?,?,?,?,?,?,?,?,?,?,?)"/>
+                    <retrieve name="pisg4.usp_DohvatiRasporedeNaRadnaMjesta"/>
+                    <retrieveById name="pisg4.usp_DohvatiRasporedNaRadnaMjestaPoId(?,?,?,?)"/>
+                    <update name="pisg4.usp_AzurirajRasporedNaRadnaMjesta(?,?,?,?,?,?,?,?,?,?,?,?)"/>
+                    <delete name="pisg4.usp_ObrisiRasporedNaRadnaMjesta(?,?,?,?)"/>
+                </crud>
+            </table>
+            <table code="Školska sprema" name="Školska sprema">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Oznaka" group="0" name="Oznaka" nullable="false" primary="true" size="2" type="char(2)"/>
+                <column visible="true" code="Stepen" group="0" name="Stepen" nullable="false" primary="true" size="1" type="numeric(1)">
+                    <references refColumn="Stepen" refTable="Nivo obrazovanja"/>
+                </column>
+                <column visible="true" code="Nivo obrazovanja" group="0" name="Nivo obrazovanja" nullable="false" primary="true" size="" type="smallint">
+                    <references refColumn="Nivo obrazovanja" refTable="Nivo obrazovanja"/>
+                </column>
+                <column visible="true" code="Naziv" group="0" name="Naziv" nullable="false" primary="false" size="120" type="varchar(120)"/>
+                <column visible="true" code="Opis" group="0" name="Opis" nullable="true" primary="false" size="256" type="varchar(256)"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiSkolskuSpremu(?,?,?,?,?)"/>
+                    <retrieve name="pisg4.usp_DohvatiSkolskeSpreme"/>
+                    <retrieveById name="pisg4.usp_DohvatiSkolskuSpremuPoId(?,?,?)"/>
+                    <update name="pisg4.usp_AzurirajSkolskuSpremu(?,?,?,?,?)"/>
+                    <delete name="pisg4.usp_ObrisiSkolskuSpremu(?,?,?)"/>
+                </crud>
+            </table>
+            <table code="Vrsta radnog odnosa" name="Vrsta radnog odnosa">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Oznaka" group="0" name="Oznaka" nullable="false" primary="true" size="2" type="char(2)"/>
+                <column visible="true" code="Naziv" group="0" name="Naziv" nullable="false" primary="false" size="120" type="varchar(120)"/>
+                <column visible="true" code="Opis" group="0" name="Opis" nullable="true" primary="false" size="256" type="varchar(256)"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiVrstuRadnogOdnosa(?,?,?)"/>
+                    <retrieve name="pisg4.usp_DohvatiVrsteRadnihOdnosa"/>
+                    <retrieveById name="pisg4.usp_DohvatiVrstuRadnogOdnosaPoId(?)"/>
+                    <update name="pisg4.usp_AzurirajVrstuRadnogOdnosa(?,?,?)"/>
+                    <delete name="pisg4.usp_ObrisiVrstuRadnogOdnosa(?)"/>
+                </crud>
+            </table>
+        </package>
+        <package name="Materijalni resursi">
+            <package name="Osnovna sredstva">
+                <table code="Osnovno sredstvo" name="Osnovno sredstvo">
+                    <groups>
+                        <group id="0" name="Ime grupe"/>
+                    </groups>
+                    <column visible="true" code="Inventarski broj" group="0" name="Inventarski broj" nullable="false" primary="true" size="30" type="varchar(30)"/>
+                    <column visible="true" code="Oznaka vrste osnovnog sredstva" group="0" name="Oznaka vrste osnovnog sredstva" nullable="false" primary="false" size="20" type="varchar(20)">
+                        <references refColumn="Oznaka vrste osnovnog sredstva" refTable="Vrsta osnovnog sredstva"/>
+                    </column>
+                    <column visible="true" code="Drž_Oznaka" group="0" name="Drž_Oznaka" nullable="false" primary="false" size="3" type="char(3)">
+                        <references refColumn="Država registracije" refTable="Organizaciona jedinica"/>
+                    </column>
+                    <column visible="true" code="Identifikator" group="0" name="Identifikator" nullable="false" primary="false" size="" type="bigint">
+                        <references refColumn="Poslovni sistem" refTable="Organizaciona jedinica"/>
+                    </column>
+                    <column visible="true" code="Oznaka" group="0" name="Oznaka" nullable="false" primary="false" size="4" type="numeric(4)">
+                        <references refColumn="Oznaka" refTable="Organizaciona jedinica"/>
+                    </column>
+                    <column visible="true" code="Naziv" group="0" name="Naziv" nullable="false" primary="false" size="100" type="varchar(100)"/>
+                    <column visible="true" code="Serijski broj" group="0" name="Serijski broj" nullable="true" primary="false" size="100" type="varchar(100)"/>
+                    <column visible="true" code="Datum nabavke" group="0" name="Datum nabavke" nullable="false" primary="false" size="" type="datetime"/>
+                    <column visible="true" code="Datum aktivacije" group="0" name="Datum aktivacije" nullable="true" primary="false" size="" type="datetime"/>
+                    <column visible="true" code="Nabavna vrijednost" group="0" name="Nabavna vrijednost" nullable="false" primary="false" size="12" type="decimal(12,2)"/>
+                    <column visible="true" code="Datum otpisa" group="0" name="Datum otpisa" nullable="true" primary="false" size="" type="datetime"/>
+                    <column visible="true" code="Napomena" group="0" name="Napomena" nullable="true" primary="false" size="500" type="varchar(500)"/>
+                    <crud>
+                        <create name="pisg4.usp_UnesiOsnovnoSredstvo(?,?,?,?,?,?,?,?,?,?,?,?)"/>
+						<retrieve name="pisg4.usp_DohvatiOsnovnaSredstva"/>
+						<retrieveById name="pisg4.usp_DohvatiOsnovnoSredstvoPoId(?)"/>
+						<update name="pisg4.usp_AzurirajOsnovnoSredstvo(?,?,?,?,?,?,?,?,?,?,?,?)"/>
+						<delete name="pisg4.usp_ObrisiOsnovnoSredstvo(?)"/>
+                    </crud>
+                </table>
+                <table code="Vrsta osnovnog sredstva" name="Vrsta osnovnog sredstva">
+                    <groups>
+                        <group id="0" name="Ime grupe"/>
+                    </groups>
+                    <column visible="true" code="Oznaka vrste osnovnog sredstva" group="0" name="Oznaka vrste osnovnog sredstva" nullable="false" primary="true" size="20" type="varchar(20)"/>
+                    <column visible="true" code="Naziv" group="0" name="Naziv" nullable="false" primary="false" size="100" type="varchar(100)"/>
+                    <column visible="true" code="Opis" group="0" name="Opis" nullable="true" primary="false" size="500" type="varchar(500)"/>
+                    <column visible="false" code="Aktivna" group="0" name="Aktivna" nullable="false" primary="false" size="" type="bit"/>
+                    <crud>
+                        <create name="pisg4.usp_UnesiVrstuOsnovnogSredstva(?,?,?,?)"/>
+						<retrieve name="pisg4.usp_DohvatiVrsteOsnovnihSredstava"/>
+						<retrieveById name="pisg4.usp_DohvatiVrstuOsnovnogSredstvaPoId(?)"/>
+						<update name="pisg4.usp_AzurirajVrstuOsnovnogSredstva(?,?,?,?)"/>
+						<delete name="pisg4.usp_ObrisiVrstuOsnovnogSredstva(?)"/>
+                    </crud>
+                </table>
+                <table code="Zaduženje osnovnog sredstva" name="Zaduženje osnovnog sredstva">
+                    <groups>
+                        <group id="0" name="Ime grupe"/>
+                    </groups>
+                    <column visible="true" code="Id zaduzenja osnovnog sredstva" group="0" name="Id zaduzenja osnovnog sredstva" nullable="false" primary="true" size="" type="int"/>
+                    <column visible="true" code="Inventarski broj" group="0" name="Inventarski broj" nullable="false" primary="false" size="30" type="varchar(30)">
+                        <references refColumn="Inventarski broj" refTable="Osnovno sredstvo"/>
+                    </column>
+                    <column visible="true" code="Drž_Oznaka" group="0" name="Drž_Oznaka" nullable="false" primary="false" size="3" type="char(3)">
+                        <references refColumn="Država registracije" refTable="Registar zaposlenih"/>
+                    </column>
+                    <column visible="true" code="Identifikator" group="0" name="Identifikator" nullable="false" primary="false" size="" type="bigint">
+                        <references refColumn="Poslovni sistem" refTable="Registar zaposlenih"/>
+                    </column>
+                    <column visible="true" code="Redni broj evidencije" group="0" name="Redni broj evidencije" nullable="false" primary="false" size="" type="int">
+                        <references refColumn="Redni broj evidencije" refTable="Registar zaposlenih"/>
+                    </column>
+                    <column visible="true" code="Datum zaduzenja" group="0" name="Datum zaduzenja" nullable="false" primary="false" size="" type="datetime"/>
+                    <column visible="true" code="Datum razduzenja" group="0" name="Datum razduzenja" nullable="true" primary="false" size="" type="datetime"/>
+                    <column visible="true" code="Napomena" group="0" name="Napomena" nullable="true" primary="false" size="500" type="varchar(500)"/>
+                    <crud>
+                        <create name="pisg4.usp_UnesiZaduzenjeOsnovnogSredstva(?,?,?,?,?,?,?,?)"/>
+						<retrieve name="pisg4.usp_DohvatiZaduzenjaOsnovnihSredstava"/>
+						<retrieveById name="pisg4.usp_DohvatiZaduzenjeOsnovnogSredstvaPoId(?)"/>
+						<update name="pisg4.usp_AzurirajZaduzenjeOsnovnogSredstva(?,?,?,?,?,?,?,?)"/>
+						<delete name="pisg4.usp_ObrisiZaduzenjeOsnovnogSredstva(?)"/>
+                    </crud>
+                </table>
+            </package>
+            <package name="Sitan inventar">
+                <table code="Sitan inventar" name="Sitan inventar">
+                    <groups>
+                        <group id="0" name="Ime grupe"/>
+                    </groups>
+                    <column visible="true" code="Oznaka sitnog inventara" group="0" name="Oznaka sitnog inventara" nullable="false" primary="true" size="30" type="varchar(30)"/>
+                    <column visible="true" code="Oznaka vrste sitnog inventara" group="0" name="Oznaka vrste sitnog inventara" nullable="false" primary="false" size="20" type="varchar(20)">
+                        <references refColumn="Oznaka vrste sitnog inventara" refTable="Vrsta sitnog inventara"/>
+                    </column>
+                    <column visible="true" code="Naziv" group="0" name="Naziv" nullable="false" primary="false" size="100" type="varchar(100)"/>
+                    <column visible="true" code="Jedinica mjere" group="0" name="Jedinica mjere" nullable="false" primary="false" size="20" type="varchar(20)"/>
+                    <column visible="true" code="Opis" group="0" name="Opis" nullable="true" primary="false" size="500" type="varchar(500)"/>
+                    <column visible="false" code="Aktivan" group="0" name="Aktivan" nullable="false" primary="false" size="" type="bit"/>
+                    <crud>
+                        <create name="pisg4.usp_UnesiSitanInventar(?,?,?,?,?,?)"/>
+						<retrieve name="pisg4.usp_DohvatiSitanInventar"/>
+						<retrieveById name="pisg4.usp_DohvatiSitanInventarPoId(?)"/>
+						<update name="pisg4.usp_AzurirajSitanInventar(?,?,?,?,?,?)"/>
+						<delete name="pisg4.usp_ObrisiSitanInventar(?)"/>
+                    </crud>
+                </table>
+                <table code="Vrsta sitnog inventara" name="Vrsta sitnog inventara">
+                    <groups>
+                        <group id="0" name="Ime grupe"/>
+                    </groups>
+                    <column visible="true" code="Oznaka vrste sitnog inventara" group="0" name="Oznaka vrste sitnog inventara" nullable="false" primary="true" size="20" type="varchar(20)"/>
+                    <column visible="true" code="Naziv" group="0" name="Naziv" nullable="false" primary="false" size="100" type="varchar(100)"/>
+                    <column visible="true" code="Opis" group="0" name="Opis" nullable="true" primary="false" size="500" type="varchar(500)"/>
+                    <column visible="false" code="Aktivna" group="0" name="Aktivna" nullable="false" primary="false" size="" type="bit"/>
+                    <crud>
+                        <create name="pisg4.usp_UnesiVrstuSitnogInventara(?,?,?,?)"/>
+						<retrieve name="pisg4.usp_DohvatiVrsteSitnogInventara"/>
+						<retrieveById name="pisg4.usp_DohvatiVrstuSitnogInventaraPoId(?)"/>
+						<update name="pisg4.usp_AzurirajVrstuSitnogInventara(?,?,?,?)"/>
+						<delete name="pisg4.usp_ObrisiVrstuSitnogInventara(?)"/>
+                    </crud>
+                </table>
+                <table code="Stanje sitnog inventara" name="Stanje sitnog inventara">
+                    <groups>
+                        <group id="0" name="Ime grupe"/>
+                    </groups>
+                    <column visible="true" code="Id stanja sitnog inventara" group="0" name="Id stanja sitnog inventara" nullable="false" primary="true" size="" type="int"/>
+                    <column visible="true" code="Oznaka sitnog inventara" group="0" name="Oznaka sitnog inventara" nullable="false" primary="false" size="30" type="varchar(30)">
+                        <references refColumn="Oznaka sitnog inventara" refTable="Sitan inventar"/>
+                    </column>
+                    <column visible="true" code="Drž_Oznaka" group="0" name="Drž_Oznaka" nullable="false" primary="false" size="3" type="char(3)">
+                        <references refColumn="Država registracije" refTable="Organizaciona jedinica"/>
+                    </column>
+                    <column visible="true" code="Identifikator" group="0" name="Identifikator" nullable="false" primary="false" size="" type="bigint">
+                        <references refColumn="Poslovni sistem" refTable="Organizaciona jedinica"/>
+                    </column>
+                    <column visible="true" code="Oznaka" group="0" name="Oznaka" nullable="false" primary="false" size="4" type="numeric(4)">
+                        <references refColumn="Oznaka" refTable="Organizaciona jedinica"/>
+                    </column>
+                    <column visible="true" code="Količina" group="0" name="Količina" nullable="false" primary="false" size="" type="int"/>
+                    <column visible="true" code="Minimalna količina" group="0" name="Minimalna količina" nullable="true" primary="false" size="" type="int"/>
+                    <column visible="true" code="Datum poslednje izmjene" group="0" name="Datum poslednje izmjene" nullable="false" primary="false" size="" type="datetime"/>
+                    <crud>
+                        <create name="pisg4.usp_UnesiStanjeSitnogInventara(?,?,?,?,?,?,?,?)"/>
+						<retrieve name="pisg4.usp_DohvatiStanjaSitnogInventara"/>
+						<retrieveById name="pisg4.usp_DohvatiStanjeSitnogInventaraPoId(?)"/>
+						<update name="pisg4.usp_AzurirajStanjeSitnogInventara(?,?,?,?,?,?,?,?)"/>
+						<delete name="pisg4.usp_ObrisiStanjeSitnogInventara(?)"/>
+                    </crud>
+                </table>
+            </package>
+        </package>
+        <package name="Poslovni partneri i saradnici">
+            <table code="Dobavljač" name="Dobavljač">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Id dobavljača" group="0" name="Id dobavljača" nullable="false" primary="true" size="" type="int"/>
+                <column visible="true" code="Naziv" group="0" name="Naziv" nullable="false" primary="false" size="120" type="varchar(120)"/>
+                <column visible="true" code="PIB" group="0" name="PIB" nullable="true" primary="false" size="20" type="varchar(20)"/>
+                <column visible="true" code="Registracioni broj" group="0" name="Registracioni broj" nullable="true" primary="false" size="30" type="varchar(30)"/>
+                <column visible="true" code="Adresa sjedišta" group="0" name="Adresa sjedišta" nullable="true" primary="false" size="200" type="varchar(200)"/>
+                <column visible="true" code="Telefon" group="0" name="Telefon" nullable="true" primary="false" size="30" type="varchar(30)"/>
+                <column visible="true" code="Email" group="0" name="Email" nullable="true" primary="false" size="120" type="varchar(120)"/>
+                <column visible="false" code="Aktivan" group="0" name="Aktivan" nullable="false" primary="false" size="" type="bit"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiDobavljaca(?,?,?,?,?,?,?,?)"/>
+					<retrieve name="pisg4.usp_DohvatiDobavljace"/>
+					<retrieveById name="pisg4.usp_DohvatiDobavljacaPoId(?)"/>
+					<update name="pisg4.usp_AzurirajDobavljaca(?,?,?,?,?,?,?,?)"/>
+					<delete name="pisg4.usp_ObrisiDobavljaca(?)"/>
+                </crud>
+            </table>
+            <table code="Proizvođač" name="Proizvođač">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Id proizvođača" group="0" name="Id proizvođača" nullable="false" primary="true" size="" type="int"/>
+                <column visible="true" code="Naziv" group="0" name="Naziv" nullable="false" primary="false" size="120" type="varchar(120)"/>
+                <column visible="true" code="Adresa sjedišta" group="0" name="Adresa sjedišta" nullable="true" primary="false" size="200" type="varchar(200)"/>
+                <column visible="true" code="Telefon" group="0" name="Telefon" nullable="true" primary="false" size="30" type="varchar(30)"/>
+                <column visible="true" code="Email" group="0" name="Email" nullable="true" primary="false" size="120" type="varchar(120)"/>
+                <column visible="false" code="Aktivan" group="0" name="Aktivan" nullable="false" primary="false" size="" type="bit"/>
+                <crud>
+					<create name="pisg4.usp_UnesiProizvodjaca(?,?,?,?,?,?)"/>
+					<retrieve name="pisg4.usp_DohvatiProizvodjace"/>
+					<retrieveById name="pisg4.usp_DohvatiProizvodjacaPoId(?)"/>
+					<update name="pisg4.usp_AzurirajProizvodjaca(?,?,?,?,?,?)"/>
+					<delete name="pisg4.usp_ObrisiProizvodjaca(?)"/>
+				</crud>
+            </table>
+        </package>
+    </package>
+        <package name="Tehnologija procesa rada">
+            <package name="Katalog lijekova i zalihe">
+            <table code="Farmaceutski oblik" name="Farmaceutski oblik">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Oznaka farmaceutskog oblika" group="0" name="Oznaka farmaceutskog oblika" nullable="false" primary="true" size="10" type="varchar(10)"/>
+                <column visible="true" code="Naziv" group="0" name="Naziv" nullable="false" primary="false" size="80" type="varchar(80)"/>
+                <column visible="true" code="Opis" group="0" name="Opis" nullable="true" primary="false" size="250" type="varchar(250)"/>
+                <column visible="false" code="Aktivan" group="0" name="Aktivan" nullable="false" primary="false" size="" type="bit"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiFarmaceutskiOblik(?,?,?,?)"/>
+					<retrieve name="pisg4.usp_DohvatiFarmaceutskeOblike"/>
+					<retrieveById name="pisg4.usp_DohvatiFarmaceutskiOblikPoId(?)"/>
+					<update name="pisg4.usp_AzurirajFarmaceutskiOblik(?,?,?,?)"/>
+					<delete name="pisg4.usp_ObrisiFarmaceutskiOblik(?)"/>
+                </crud>
+            </table>
+            <table code="ATC oznaka" name="ATC oznaka">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Oznaka ATC" group="0" name="Oznaka ATC" nullable="false" primary="true" size="7" type="varchar(7)"/>
+                <column visible="true" code="Naziv" group="0" name="Naziv" nullable="false" primary="false" size="80" type="varchar(80)"/>
+                <column visible="true" code="Opis" group="0" name="Opis" nullable="true" primary="false" size="250" type="varchar(250)"/>
+                <column visible="false" code="Aktivan" group="0" name="Aktivan" nullable="false" primary="false" size="" type="bit"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiATCOznaku(?,?,?,?)"/>
+					<retrieve name="pisg4.usp_DohvatiATCOznake"/>
+					<retrieveById name="pisg4.usp_DohvatiATCOznakuPoId(?)"/>
+					<update name="pisg4.usp_AzurirajATCOznaku(?,?,?,?)"/>
+					<delete name="pisg4.usp_ObrisiATCOznaku(?)"/>
+                </crud>
+            </table>
+            <table code="Lijek" name="Lijek">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Id lijeka" group="0" name="Id lijeka" nullable="false" primary="true" size="" type="int"/>
+                <column visible="true" code="Oznaka farmaceutskog oblika" group="0" name="Oznaka farmaceutskog oblika" nullable="false" primary="false" size="10" type="varchar(10)">
+                    <references refColumn="Oznaka farmaceutskog oblika" refTable="Farmaceutski oblik"/>
+                </column>
+                <column visible="true" code="Oznaka ATC" group="0" name="Oznaka ATC" nullable="false" primary="false" size="7" type="varchar(7)">
+                    <references refColumn="Oznaka ATC" refTable="ATC oznaka"/>
+                </column>
+                <column visible="true" code="Id proizvođača" group="0" name="Id proizvođača" nullable="false" primary="false" size="" type="int">
+                    <references refColumn="Id proizvođača" refTable="Proizvođač"/>
+                </column>
+                <column visible="true" code="Naziv" group="0" name="Naziv" nullable="false" primary="false" size="120" type="varchar(120)"/>
+                <column visible="true" code="Šifra" group="0" name="Šifra" nullable="true" primary="false" size="30" type="varchar(30)"/>
+                <column visible="true" code="Jačina" group="0" name="Jačina" nullable="true" primary="false" size="50" type="varchar(50)"/>
+                <column visible="true" code="Pakovanje" group="0" name="Pakovanje" nullable="true" primary="false" size="100" type="varchar(100)"/>
+                <column visible="true" code="Registracioni broj" group="0" name="Registracioni broj" nullable="true" primary="false" size="50" type="varchar(50)"/>
+                <column visible="true" code="Datum važenja registracije" group="0" name="Datum važenja registracije" nullable="true" primary="false" size="" type="datetime"/>
+                <column visible="true" code="Izdaje se na recept" group="0" name="Izdaje se na recept" nullable="false" primary="false" size="" type="bit"/>
+                <column visible="false" code="Aktivan" group="0" name="Aktivan" nullable="false" primary="false" size="" type="bit"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiLijek(?,?,?,?,?,?,?,?,?,?,?,?)"/>
+					<retrieve name="pisg4.usp_DohvatiLijekove"/>
+					<retrieveById name="pisg4.usp_DohvatiLijekPoId(?)"/>
+					<update name="pisg4.usp_AzurirajLijek(?,?,?,?,?,?,?,?,?,?,?,?)"/>
+					<delete name="pisg4.usp_ObrisiLijek(?)"/>
+                </crud>
+            </table>
+            <table code="Serija lijeka" name="Serija lijeka">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Id serije" group="0" name="Id serije" nullable="false" primary="true" size="" type="int"/>
+                <column visible="true" code="Id lijeka" group="0" name="Id lijeka" nullable="false" primary="false" size="" type="int">
+                    <references refColumn="Id lijeka" refTable="Lijek"/>
+                </column>
+                <column visible="true" code="Broj serije" group="0" name="Broj serije" nullable="false" primary="false" size="50" type="varchar(50)"/>
+                <column visible="true" code="Datum proizvodnje" group="0" name="Datum proizvodnje" nullable="true" primary="false" size="" type="datetime"/>
+                <column visible="true" code="Rok trajanja" group="0" name="Rok trajanja" nullable="false" primary="false" size="" type="datetime"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiSerijuLijeka(?,?,?,?,?)"/>
+					<retrieve name="pisg4.usp_DohvatiSerijeLijeka"/>
+					<retrieveById name="pisg4.usp_DohvatiSerijuLijekaPoId(?)"/>
+					<update name="pisg4.usp_AzurirajSerijuLijeka(?,?,?,?,?)"/>
+					<delete name="pisg4.usp_ObrisiSerijuLijeka(?)"/>
+                </crud>
+            </table>
+            <table code="Cijena lijeka" name="Cijena lijeka">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Id cijene" group="0" name="Id cijene" nullable="false" primary="true" size="" type="int"/>
+                <column visible="true" code="Id lijeka" group="0" name="Id lijeka" nullable="false" primary="false" size="" type="int">
+                    <references refColumn="Id lijeka" refTable="Lijek"/>
+                </column>
+                <column visible="true" code="Iznos" group="0" name="Iznos" nullable="false" primary="false" size="12" type="decimal(12,2)"/>
+                <column visible="true" code="Važi od" group="0" name="Važi od" nullable="false" primary="false" size="" type="datetime"/>
+                <column visible="true" code="Važi do" group="0" name="Važi do" nullable="true" primary="false" size="" type="datetime"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiCijenuLijeka(?,?,?,?,?)"/>
+					<retrieve name="pisg4.usp_DohvatiCijeneLijeka"/>
+					<retrieveById name="pisg4.usp_DohvatiCijenuLijekaPoId(?)"/>
+					<update name="pisg4.usp_AzurirajCijenuLijeka(?,?,?,?,?)"/>
+					<delete name="pisg4.usp_ObrisiCijenuLijeka(?)"/>
+                </crud>
+            </table>
+            <table code="Stanje zalihe" name="Stanje zalihe">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Id stanja zalihe" group="0" name="Id stanja zalihe" nullable="false" primary="true" size="" type="int"/>
+                <column visible="true" code="Drž_Oznaka" group="0" name="Drž_Oznaka" nullable="false" primary="false" size="3" type="char(3)">
+                    <references refColumn="Država registracije" refTable="Organizaciona jedinica"/>
+                </column>
+                <column visible="true" code="Identifikator" group="0" name="Identifikator" nullable="false" primary="false" size="" type="bigint">
+                    <references refColumn="Poslovni sistem" refTable="Organizaciona jedinica"/>
+                </column>
+                <column visible="true" code="Oznaka" group="0" name="Oznaka" nullable="false" primary="false" size="4" type="numeric(4)">
+                    <references refColumn="Oznaka" refTable="Organizaciona jedinica"/>
+                </column>
+                <column visible="true" code="Id serije" group="0" name="Id serije" nullable="false" primary="false" size="" type="int">
+                    <references refColumn="Id serije" refTable="Serija lijeka"/>
+                </column>
+                <column visible="true" code="Količina" group="0" name="Količina" nullable="false" primary="false" size="" type="int"/>
+                <column visible="true" code="Minimalna količina" group="0" name="Minimalna količina" nullable="true" primary="false" size="" type="int"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiStanjeZalihe(?,?,?,?,?,?,?)"/>
+					<retrieve name="pisg4.usp_DohvatiStanjaZaliha"/>
+					<retrieveById name="pisg4.usp_DohvatiStanjeZalihePoId(?)"/>
+					<update name="pisg4.usp_AzurirajStanjeZalihe(?,?,?,?,?,?,?)"/>
+					<delete name="pisg4.usp_ObrisiStanjeZalihe(?)"/>
+                </crud>
+            </table>
+            <table code="Dobavljač lijeka" name="Dobavljač lijeka">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Id ponude" group="0" name="Id ponude" nullable="false" primary="true" size="" type="int"/>
+                <column visible="true" code="Id dobavljača" group="0" name="Id dobavljača" nullable="false" primary="false" size="" type="int">
+                    <references refColumn="Id dobavljača" refTable="Dobavljač"/>
+                </column>
+                <column visible="true" code="Id lijeka" group="0" name="Id lijeka" nullable="false" primary="false" size="" type="int">
+                    <references refColumn="Id lijeka" refTable="Lijek"/>
+                </column>
+                <column visible="true" code="Dobavljačka šifra lijeka" group="0" name="Dobavljačka šifra lijeka" nullable="true" primary="false" size="30" type="varchar(30)"/>
+                <column visible="false" code="Aktivan" group="0" name="Aktivan" nullable="false" primary="false" size="" type="bit"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiDobavljacaLijeka(?,?,?,?,?)"/>
+					<retrieve name="pisg4.usp_DohvatiDobavljaceLijeka"/>
+					<retrieveById name="pisg4.usp_DohvatiDobavljacaLijekaPoId(?)"/>
+					<update name="pisg4.usp_AzurirajDobavljacaLijeka(?,?,?,?,?)"/>
+					<delete name="pisg4.usp_ObrisiDobavljacaLijeka(?)"/>
+                </crud>
+            </table>
+        </package>
+            <package name="Prodaja i recepti">
+            <table code="Prodaja" name="Prodaja">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Id prodaje" group="0" name="Id prodaje" nullable="false" primary="true" size="" type="int"/>
+                <column visible="true" code="Drž_Oznaka" group="0" name="Drž_Oznaka" nullable="false" primary="false" size="3" type="char(3)">
+                    <references refColumn="Država registracije" refTable="Registar zaposlenih"/>
+                </column>
+                <column visible="true" code="Identifikator" group="0" name="Identifikator" nullable="false" primary="false" size="" type="bigint">
+                    <references refColumn="Poslovni sistem" refTable="Registar zaposlenih"/>
+                </column>
+                <column visible="true" code="Redni broj evidencije" group="0" name="Redni broj evidencije" nullable="false" primary="false" size="" type="int">
+                    <references refColumn="Redni broj evidencije" refTable="Registar zaposlenih"/>
+                </column>
+                <column visible="true" code="Datum i vrijeme prodaje" group="0" name="Datum i vrijeme prodaje" nullable="false" primary="false" size="" type="datetime"/>
+                <column visible="true" code="Napomena" group="0" name="Napomena" nullable="true" primary="false" size="250" type="varchar(250)"/>
+                <column visible="true" code="Zaključena" group="0" name="Zaključena" nullable="false" primary="false" size="" type="bit"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiProdaju(?,?,?,?,?,?,?)"/>
+					<retrieve name="pisg4.usp_DohvatiProdaje"/>
+					<retrieveById name="pisg4.usp_DohvatiProdajuPoId(?)"/>
+					<update name="pisg4.usp_AzurirajProdaju(?,?,?,?,?,?,?)"/>
+					<delete name="pisg4.usp_ObrisiProdaju(?)"/>
+                </crud>
+            </table>
+            <table code="Način plaćanja" name="Način plaćanja">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Oznaka načina plaćanja" group="0" name="Oznaka načina plaćanja" nullable="false" primary="true" size="10" type="varchar(10)"/>
+                <column visible="true" code="Naziv" group="0" name="Naziv" nullable="false" primary="false" size="50" type="varchar(50)"/>
+                <column visible="false" code="Aktivan" group="0" name="Aktivan" nullable="false" primary="false" size="" type="bit"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiNacinPlacanja(?,?,?)"/>
+					<retrieve name="pisg4.usp_DohvatiNacinePlacanja"/>
+					<retrieveById name="pisg4.usp_DohvatiNacinPlacanjaPoId(?)"/>
+					<update name="pisg4.usp_AzurirajNacinPlacanja(?,?,?)"/>
+					<delete name="pisg4.usp_ObrisiNacinPlacanja(?)"/>
+                </crud>
+            </table>
+            <table code="Stavka prodaje" name="Stavka prodaje">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Id stavke prodaje" group="0" name="Id stavke prodaje" nullable="false" primary="true" size="" type="int"/>
+                <column visible="true" code="Id prodaje" group="0" name="Id prodaje" nullable="false" primary="false" size="" type="int">
+                    <references refColumn="Id prodaje" refTable="Prodaja"/>
+                </column>
+                <column visible="true" code="Id serije" group="0" name="Id serije" nullable="false" primary="false" size="" type="int">
+                    <references refColumn="Id serije" refTable="Serija lijeka"/>
+                </column>
+                <column visible="true" code="Id recepta" group="0" name="Id recepta" nullable="true" primary="false" size="" type="int">
+                    <references refColumn="Id recepta" refTable="Recept"/>
+                </column>
+                <column visible="true" code="Količina" group="0" name="Količina" nullable="false" primary="false" size="" type="int"/>
+                <column visible="true" code="Jedinična cijena" group="0" name="Jedinična cijena" nullable="false" primary="false" size="12" type="decimal(12,2)"/>
+                <column visible="true" code="Popust" group="0" name="Popust" nullable="true" primary="false" size="5" type="decimal(5,2)"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiStavkuProdaje(?,?,?,?,?,?,?)"/>
+					<retrieve name="pisg4.usp_DohvatiStavkeProdaje"/>
+					<retrieveById name="pisg4.usp_DohvatiStavkuProdajePoId(?)"/>
+					<update name="pisg4.usp_AzurirajStavkuProdaje(?,?,?,?,?,?,?)"/>
+					<delete name="pisg4.usp_ObrisiStavkuProdaje(?)"/>
+                </crud>
+            </table>
+            <table code="Račun" name="Račun">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Id računa" group="0" name="Id računa" nullable="false" primary="true" size="" type="int"/>
+                <column visible="true" code="Id prodaje" group="0" name="Id prodaje" nullable="false" primary="false" size="" type="int">
+                    <references refColumn="Id prodaje" refTable="Prodaja"/>
+                </column>
+                <column visible="true" code="Oznaka načina plaćanja" group="0" name="Oznaka načina plaćanja" nullable="false" primary="false" size="10" type="varchar(10)">
+                    <references refColumn="Oznaka načina plaćanja" refTable="Način plaćanja"/>
+                </column>
+                <column visible="true" code="Broj računa" group="0" name="Broj računa" nullable="false" primary="false" size="50" type="varchar(50)"/>
+                <column visible="true" code="Datum i vrijeme izdavanja" group="0" name="Datum i vrijeme izdavanja" nullable="false" primary="false" size="" type="datetime"/>
+                <column visible="true" code="Fiskalna oznaka" group="0" name="Fiskalna oznaka" nullable="true" primary="false" size="100" type="varchar(100)"/>
+                <column visible="true" code="Napomena" group="0" name="Napomena" nullable="true" primary="false" size="250" type="varchar(250)"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiRacun(?,?,?,?,?,?,?)"/>
+					<retrieve name="pisg4.usp_DohvatiRacune"/>
+					<retrieveById name="pisg4.usp_DohvatiRacunPoId(?)"/>
+					<update name="pisg4.usp_AzurirajRacun(?,?,?,?,?,?,?)"/>
+					<delete name="pisg4.usp_ObrisiRacun(?)"/>
+                </crud>
+            </table>
+            <table code="Pacijent" name="Pacijent">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Id pacijenta" group="0" name="Id pacijenta" nullable="false" primary="true" size="" type="int"/>
+                <column visible="true" code="Ime" group="0" name="Ime" nullable="false" primary="false" size="60" type="varchar(60)"/>
+                <column visible="true" code="Prezime" group="0" name="Prezime" nullable="false" primary="false" size="60" type="varchar(60)"/>
+                <column visible="true" code="JMBG" group="0" name="JMBG" nullable="true" primary="false" size="13" type="varchar(13)"/>
+                <column visible="true" code="Broj zdravstvenog osiguranja" group="0" name="Broj zdravstvenog osiguranja" nullable="true" primary="false" size="30" type="varchar(30)"/>
+                <column visible="true" code="Datum rođenja" group="0" name="Datum rođenja" nullable="true" primary="false" size="" type="datetime"/>
+                <column visible="true" code="Napomena" group="0" name="Napomena" nullable="true" primary="false" size="250" type="varchar(250)"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiPacijenta(?,?,?,?,?,?,?)"/>
+					<retrieve name="pisg4.usp_DohvatiPacijente"/>
+					<retrieveById name="pisg4.usp_DohvatiPacijentaPoId(?)"/>
+					<update name="pisg4.usp_AzurirajPacijenta(?,?,?,?,?,?,?)"/>
+					<delete name="pisg4.usp_ObrisiPacijenta(?)"/>
+                </crud>
+            </table>
+            <table code="Recept" name="Recept">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Id recepta" group="0" name="Id recepta" nullable="false" primary="true" size="" type="int"/>
+                <column visible="true" code="Id pacijenta" group="0" name="Id pacijenta" nullable="true" primary="false" size="" type="int">
+                    <references refColumn="Id pacijenta" refTable="Pacijent"/>
+                </column>
+                <column visible="true" code="Id lijeka" group="0" name="Id lijeka" nullable="false" primary="false" size="" type="int">
+                    <references refColumn="Id lijeka" refTable="Lijek"/>
+                </column>
+                <column visible="true" code="Broj recepta" group="0" name="Broj recepta" nullable="false" primary="false" size="50" type="varchar(50)"/>
+                <column visible="true" code="Datum propisivanja" group="0" name="Datum propisivanja" nullable="false" primary="false" size="" type="datetime"/>
+                <column visible="true" code="Važi do" group="0" name="Važi do" nullable="true" primary="false" size="" type="datetime"/>
+                <column visible="true" code="Naziv propisivača" group="0" name="Naziv propisivača" nullable="true" primary="false" size="120" type="varchar(120)"/>
+                <column visible="true" code="Napomena" group="0" name="Napomena" nullable="true" primary="false" size="250" type="varchar(250)"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiRecept(?,?,?,?,?,?,?,?)"/>
+					<retrieve name="pisg4.usp_DohvatiRecepte"/>
+					<retrieveById name="pisg4.usp_DohvatiReceptPoId(?)"/>
+					<update name="pisg4.usp_AzurirajRecept(?,?,?,?,?,?,?,?)"/>
+					<delete name="pisg4.usp_ObrisiRecept(?)"/>
+                </crud>
+            </table>
+        </package>
+            <package name="Nabavka lijekova">
+            <table code="Status nabavke" name="Status nabavke">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Oznaka statusa nabavke" group="0" name="Oznaka statusa nabavke" nullable="false" primary="true" size="10" type="varchar(10)"/>
+                <column visible="true" code="Naziv" group="0" name="Naziv" nullable="false" primary="false" size="80" type="varchar(80)"/>
+                <column visible="true" code="Opis" group="0" name="Opis" nullable="true" primary="false" size="250" type="varchar(250)"/>
+                <column visible="false" code="Aktivan" group="0" name="Aktivan" nullable="false" primary="false" size="" type="bit"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiStatusNabavke(?,?,?,?)"/>
+					<retrieve name="pisg4.usp_DohvatiStatuseNabavke"/>
+					<retrieveById name="pisg4.usp_DohvatiStatusNabavkePoId(?)"/>
+					<update name="pisg4.usp_AzurirajStatusNabavke(?,?,?,?)"/>
+					<delete name="pisg4.usp_ObrisiStatusNabavke(?)"/>
+                </crud>
+            </table>
+            <table code="Stavka nabavke" name="Stavka nabavke">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Id stavke nabavke" group="0" name="Id stavke nabavke" nullable="false" primary="true" size="" type="int"/>
+                <column visible="true" code="Id nabavke" group="0" name="Id nabavke" nullable="false" primary="false" size="" type="int">
+                    <references refColumn="Id nabavke" refTable="Nabavka"/>
+                </column>
+                <column visible="true" code="Id lijeka" group="0" name="Id lijeka" nullable="false" primary="false" size="" type="int">
+                    <references refColumn="Id lijeka" refTable="Lijek"/>
+                </column>
+                <column visible="true" code="Naručena količina" group="0" name="Naručena količina" nullable="false" primary="false" size="" type="int"/>
+                <column visible="true" code="Primljena količina" group="0" name="Primljena količina" nullable="true" primary="false" size="" type="int"/>
+                <column visible="true" code="Nabavna jedinična cijena" group="0" name="Nabavna jedinična cijena" nullable="true" primary="false" size="12" type="decimal(12,2)"/>
+                <column visible="true" code="Napomena" group="0" name="Napomena" nullable="true" primary="false" size="250" type="varchar(250)"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiStavkuNabavke(?,?,?,?,?,?,?)"/>
+					<retrieve name="pisg4.usp_DohvatiStavkeNabavke"/>
+					<retrieveById name="pisg4.usp_DohvatiStavkuNabavkePoId(?)"/>
+					<update name="pisg4.usp_AzurirajStavkuNabavke(?,?,?,?,?,?,?)"/>
+					<delete name="pisg4.usp_ObrisiStavkuNabavke(?)"/>
+                </crud>
+            </table>
+            <table code="Nabavka" name="Nabavka">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Id nabavke" group="0" name="Id nabavke" nullable="false" primary="true" size="" type="int"/>
+                <column visible="true" code="Id dobavljača" group="0" name="Id dobavljača" nullable="false" primary="false" size="" type="int">
+                    <references refColumn="Id dobavljača" refTable="Dobavljač"/>
+                </column>
+                <column visible="true" code="Drž_Oznaka" group="0" name="Drž_Oznaka" nullable="false" primary="false" size="3" type="char(3)">
+                    <references refColumn="Država registracije" refTable="Registar zaposlenih"/>
+                </column>
+                <column visible="true" code="Identifikator" group="0" name="Identifikator" nullable="false" primary="false" size="" type="bigint">
+                    <references refColumn="Poslovni sistem" refTable="Registar zaposlenih"/>
+                </column>
+                <column visible="true" code="Redni broj evidencije" group="0" name="Redni broj evidencije" nullable="false" primary="false" size="" type="int">
+                    <references refColumn="Redni broj evidencije" refTable="Registar zaposlenih"/>
+                </column>
+                <column visible="true" code="Oznaka statusa nabavke" group="0" name="Oznaka statusa nabavke" nullable="true" primary="false" size="10" type="varchar(10)">
+                    <references refColumn="Oznaka statusa nabavke" refTable="Status nabavke"/>
+                </column>
+                <column visible="true" code="Broj nabavke" group="0" name="Broj nabavke" nullable="false" primary="false" size="50" type="varchar(50)"/>
+                <column visible="true" code="Datum i vrijeme kreiranja" group="0" name="Datum i vrijeme kreiranja" nullable="false" primary="false" size="" type="datetime"/>
+                <column visible="true" code="Očekivani datum isporuke" group="0" name="Očekivani datum isporuke" nullable="true" primary="false" size="" type="datetime"/>
+                <column visible="true" code="Datum prijema" group="0" name="Datum prijema" nullable="true" primary="false" size="" type="datetime"/>
+                <column visible="true" code="Napomena" group="0" name="Napomena" nullable="true" primary="false" size="250" type="varchar(250)"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiNabavku(?,?,?,?,?,?,?,?,?,?,?)"/>
+					<retrieve name="pisg4.usp_DohvatiNabavke"/>
+					<retrieveById name="pisg4.usp_DohvatiNabavkuPoId(?)"/>
+					<update name="pisg4.usp_AzurirajNabavku(?,?,?,?,?,?,?,?,?,?,?)"/>
+					<delete name="pisg4.usp_ObrisiNabavku(?)"/>
+                </crud>
+            </table>
+        </package>
+            <package name="Transfer lijekova">
+            <table code="Status transfera" name="Status transfera">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Oznaka statusa transfera" group="0" name="Oznaka statusa transfera" nullable="false" primary="true" size="10" type="varchar(10)"/>
+                <column visible="true" code="Naziv" group="0" name="Naziv" nullable="false" primary="false" size="80" type="varchar(80)"/>
+                <column visible="true" code="Opis" group="0" name="Opis" nullable="true" primary="false" size="250" type="varchar(250)"/>
+                <column visible="false" code="Aktivan" group="0" name="Aktivan" nullable="false" primary="false" size="" type="bit"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiStatusTransfera(?,?,?,?)"/>
+					<retrieve name="pisg4.usp_DohvatiStatuseTransfera"/>
+					<retrieveById name="pisg4.usp_DohvatiStatusTransferaPoId(?)"/>
+					<update name="pisg4.usp_AzurirajStatusTransfera(?,?,?,?)"/>
+					<delete name="pisg4.usp_ObrisiStatusTransfera(?)"/>
+                </crud>
+            </table>
+            <table code="Stavka transfera" name="Stavka transfera">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Id stavke transfera" group="0" name="Id stavke transfera" nullable="false" primary="true" size="" type="int"/>
+                <column visible="true" code="Id transfera" group="0" name="Id transfera" nullable="false" primary="false" size="" type="int">
+                    <references refColumn="Id transfera" refTable="Transfer"/>
+                </column>
+                <column visible="true" code="Id serije" group="0" name="Id serije" nullable="false" primary="false" size="" type="int">
+                    <references refColumn="Id serije" refTable="Serija lijeka"/>
+                </column>
+                <column visible="true" code="Količina" group="0" name="Količina" nullable="false" primary="false" size="" type="int"/>
+                <column visible="true" code="Napomena" group="0" name="Napomena" nullable="true" primary="false" size="250" type="varchar(250)"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiStavkuTransfera(?,?,?,?,?)"/>
+					<retrieve name="pisg4.usp_DohvatiStavkeTransfera"/>
+					<retrieveById name="pisg4.usp_DohvatiStavkuTransferaPoId(?)"/>
+					<update name="pisg4.usp_AzurirajStavkuTransfera(?,?,?,?,?)"/>
+					<delete name="pisg4.usp_ObrisiStavkuTransfera(?)"/>
+                </crud>
+            </table>
+            <table code="Transfer" name="Transfer">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Id transfera" group="0" name="Id transfera" nullable="false" primary="true" size="" type="int"/>
+                <column visible="true" code="Drž_Oznaka" group="0" name="Drž_Oznaka" nullable="false" primary="false" size="3" type="char(3)">
+                    <references refColumn="Država registracije" refTable="Organizaciona jedinica"/>
+                </column>
+                <column visible="true" code="Identifikator" group="0" name="Identifikator" nullable="false" primary="false" size="" type="bigint">
+                    <references refColumn="Poslovni sistem" refTable="Organizaciona jedinica"/>
+                </column>
+                <column visible="true" code="Oznaka" group="0" name="Oznaka" nullable="false" primary="false" size="4" type="numeric(4)">
+                    <references refColumn="Oznaka" refTable="Organizaciona jedinica"/>
+                </column>
+                <column visible="true" code="Org_Drž_Oznaka" group="0" name="Org_Drž_Oznaka" nullable="false" primary="false" size="3" type="char(3)">
+                    <references refColumn="Država registracije" refTable="Organizaciona jedinica"/>
+                </column>
+                <column visible="true" code="Org_Identifikator" group="0" name="Org_Identifikator" nullable="false" primary="false" size="" type="bigint">
+                    <references refColumn="Poslovni sistem" refTable="Organizaciona jedinica"/>
+                </column>
+                <column visible="true" code="Org_Oznaka" group="0" name="Org_Oznaka" nullable="false" primary="false" size="4" type="numeric(4)">
+                    <references refColumn="Oznaka" refTable="Organizaciona jedinica"/>
+                </column>
+                <column visible="true" code="Reg_Drž_Oznaka" group="0" name="Reg_Drž_Oznaka" nullable="false" primary="false" size="3" type="char(3)">
+                    <references refColumn="Država registracije" refTable="Registar zaposlenih"/>
+                </column>
+                <column visible="true" code="Reg_Identifikator" group="0" name="Reg_Identifikator" nullable="false" primary="false" size="" type="bigint">
+                    <references refColumn="Poslovni sistem" refTable="Registar zaposlenih"/>
+                </column>
+                <column visible="true" code="Redni broj evidencije" group="0" name="Redni broj evidencije" nullable="false" primary="false" size="" type="int">
+                    <references refColumn="Redni broj evidencije" refTable="Registar zaposlenih"/>
+                </column>
+                <column visible="true" code="Oznaka statusa transfera" group="0" name="Oznaka statusa transfera" nullable="false" primary="false" size="10" type="varchar(10)">
+                    <references refColumn="Oznaka statusa transfera" refTable="Status transfera"/>
+                </column>
+                <column visible="true" code="Broj transfera" group="0" name="Broj transfera" nullable="false" primary="false" size="50" type="varchar(50)"/>
+                <column visible="true" code="Datum i vrijeme kreiranja" group="0" name="Datum i vrijeme kreiranja" nullable="false" primary="false" size="" type="datetime"/>
+                <column visible="true" code="Datum realizacije" group="0" name="Datum realizacije" nullable="true" primary="false" size="" type="datetime"/>
+                <column visible="true" code="Napomena" group="0" name="Napomena" nullable="true" primary="false" size="250" type="varchar(250)"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiTransfer(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"/>
+					<retrieve name="pisg4.usp_DohvatiTransfere"/>
+					<retrieveById name="pisg4.usp_DohvatiTransferPoId(?)"/>
+					<update name="pisg4.usp_AzurirajTransfer(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"/>
+					<delete name="pisg4.usp_ObrisiTransfer(?)"/>
+                </crud>
+            </table>
+        </package>
+            <package name="Otpis lijekova">
+            <table code="Otpis" name="Otpis">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Id otpisa" group="0" name="Id otpisa" nullable="false" primary="true" size="" type="int"/>
+                <column visible="true" code="Drž_Oznaka" group="0" name="Drž_Oznaka" nullable="false" primary="false" size="3" type="char(3)">
+                    <references refColumn="Država registracije" refTable="Registar zaposlenih"/>
+                </column>
+                <column visible="true" code="Identifikator" group="0" name="Identifikator" nullable="false" primary="false" size="" type="bigint">
+                    <references refColumn="Poslovni sistem" refTable="Registar zaposlenih"/>
+                </column>
+                <column visible="true" code="Redni broj evidencije" group="0" name="Redni broj evidencije" nullable="false" primary="false" size="" type="int">
+                    <references refColumn="Redni broj evidencije" refTable="Registar zaposlenih"/>
+                </column>
+                <column visible="true" code="Broj otpisa" group="0" name="Broj otpisa" nullable="false" primary="false" size="50" type="varchar(50)"/>
+                <column visible="true" code="Datum i vrijeme otpisa" group="0" name="Datum i vrijeme otpisa" nullable="false" primary="false" size="" type="datetime"/>
+                <column visible="true" code="Napomena" group="0" name="Napomena" nullable="true" primary="false" size="250" type="varchar(250)"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiOtpis(?,?,?,?,?,?,?)"/>
+					<retrieve name="pisg4.usp_DohvatiOtpise"/>
+					<retrieveById name="pisg4.usp_DohvatiOtpisPoId(?)"/>
+					<update name="pisg4.usp_AzurirajOtpis(?,?,?,?,?,?,?)"/>
+					<delete name="pisg4.usp_ObrisiOtpis(?)"/>
+                </crud>
+            </table>
+            <table code="Razlog otpisa" name="Razlog otpisa">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Oznaka razloga otpisa" group="0" name="Oznaka razloga otpisa" nullable="false" primary="true" size="10" type="varchar(10)"/>
+                <column visible="true" code="Naziv" group="0" name="Naziv" nullable="false" primary="false" size="80" type="varchar(80)"/>
+                <column visible="true" code="Opis" group="0" name="Opis" nullable="true" primary="false" size="250" type="varchar(250)"/>
+                <column visible="false" code="Aktivan" group="0" name="Aktivan" nullable="false" primary="false" size="" type="bit"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiRazlogOtpisa(?,?,?,?)"/>
+					<retrieve name="pisg4.usp_DohvatiRazlogeOtpisa"/>
+					<retrieveById name="pisg4.usp_DohvatiRazlogOtpisaPoId(?)"/>
+					<update name="pisg4.usp_AzurirajRazlogOtpisa(?,?,?,?)"/>
+					<delete name="pisg4.usp_ObrisiRazlogOtpisa(?)"/>
+                </crud>
+            </table>
+            <table code="Stavka otpisa" name="Stavka otpisa">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Id stavke otpisa" group="0" name="Id stavke otpisa" nullable="false" primary="true" size="" type="int"/>
+                <column visible="true" code="Id otpisa" group="0" name="Id otpisa" nullable="false" primary="false" size="" type="int">
+                    <references refColumn="Id otpisa" refTable="Otpis"/>
+                </column>
+                <column visible="true" code="Id serije" group="0" name="Id serije" nullable="false" primary="false" size="" type="int">
+                    <references refColumn="Id serije" refTable="Serija lijeka"/>
+                </column>
+                <column visible="true" code="Oznaka razloga otpisa" group="0" name="Oznaka razloga otpisa" nullable="false" primary="false" size="10" type="varchar(10)">
+                    <references refColumn="Oznaka razloga otpisa" refTable="Razlog otpisa"/>
+                </column>
+                <column visible="true" code="Količina" group="0" name="Količina" nullable="false" primary="false" size="" type="int"/>
+                <column visible="true" code="Napomena" group="0" name="Napomena" nullable="true" primary="false" size="250" type="varchar(250)"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiStavkuOtpisa(?,?,?,?,?,?)"/>
+					<retrieve name="pisg4.usp_DohvatiStavkeOtpisa"/>
+					<retrieveById name="pisg4.usp_DohvatiStavkuOtpisaPoId(?)"/>
+					<update name="pisg4.usp_AzurirajStavkuOtpisa(?,?,?,?,?,?)"/>
+					<delete name="pisg4.usp_ObrisiStavkuOtpisa(?)"/>
+                </crud>
+            </table>
+        </package>
+    </package>
+        <package name="Upravljačka struktura">
+        <table code="Članstvo u organu upravljanja" name="Članstvo u organu upravljanja">
+            <groups>
+                <group id="0" name="Ime grupe"/>
+            </groups>
+            <column visible="true" code="Id članstva" group="0" name="Id članstva" nullable="false" primary="true" size="" type="int"/>
+            <column visible="true" code="Oznaka funkcije upravljanja" group="0" name="Oznaka funkcije upravljanja" nullable="false" primary="false" size="20" type="varchar(20)">
+                <references refColumn="Oznaka funkcije upravljanja" refTable="Funkcija u organu upravljanja"/>
+            </column>
+            <column visible="true" code="Drž_Oznaka" group="0" name="Drž_Oznaka" nullable="false" primary="false" size="3" type="char(3)">
+                <references refColumn="Država registracije" refTable="Registar zaposlenih"/>
+            </column>
+            <column visible="true" code="Identifikator" group="0" name="Identifikator" nullable="false" primary="false" size="" type="bigint">
+                <references refColumn="Poslovni sistem" refTable="Registar zaposlenih"/>
+            </column>
+            <column visible="true" code="Redni broj evidencije" group="0" name="Redni broj evidencije" nullable="false" primary="false" size="" type="int">
+                <references refColumn="Redni broj evidencije" refTable="Registar zaposlenih"/>
+            </column>
+            <column visible="true" code="Datum početka" group="0" name="Datum početka" nullable="false" primary="false" size="" type="datetime"/>
+            <column visible="true" code="Datum završetka" group="0" name="Datum završetka" nullable="true" primary="false" size="" type="datetime"/>
+            <column visible="true" code="Napomena" group="0" name="Napomena" nullable="true" primary="false" size="500" type="varchar(500)"/>
+            <crud>
+                <create name="pisg4.usp_UnesiClanstvoUOrganuUpravljanja(?,?,?,?,?,?,?,?)"/>
+				<retrieve name="pisg4.usp_DohvatiClanstvaUOrganimaUpravljanja"/>
+				<retrieveById name="pisg4.usp_DohvatiClanstvoUOrganuUpravljanjaPoId(?)"/>
+				<update name="pisg4.usp_AzurirajClanstvoUOrganuUpravljanja(?,?,?,?,?,?,?,?)"/>
+				<delete name="pisg4.usp_ObrisiClanstvoUOrganuUpravljanja(?)"/>
+            </crud>
+        </table>
+        <table code="Funkcija u organu upravljanja" name="Funkcija u organu upravljanja">
+            <groups>
+                <group id="0" name="Ime grupe"/>
+            </groups>
+            <column visible="true" code="Oznaka funkcije upravljanja" group="0" name="Oznaka funkcije upravljanja" nullable="false" primary="true" size="20" type="varchar(20)"/>
+            <column visible="true" code="Oznaka organa upravljanja" group="0" name="Oznaka organa upravljanja" nullable="false" primary="false" size="20" type="varchar(20)">
+                <references refColumn="Oznaka organa upravljanja" refTable="Organ upravljanja"/>
+            </column>
+            <column visible="true" code="Naziv" group="0" name="Naziv" nullable="false" primary="false" size="100" type="varchar(100)"/>
+            <column visible="true" code="Opis" group="0" name="Opis" nullable="true" primary="false" size="500" type="varchar(500)"/>
+            <column visible="false" code="Aktivna" group="0" name="Aktivna" nullable="false" primary="false" size="" type=""/>
+            <crud>
+                <create name="pisg4.usp_UnesiFunkcijuUOrganuUpravljanja(?,?,?,?,?)"/>
+				<retrieve name="pisg4.usp_DohvatiFunkcijeUOrganimaUpravljanja"/>
+				<retrieveById name="pisg4.usp_DohvatiFunkcijuUOrganuUpravljanjaPoId(?)"/>
+				<update name="pisg4.usp_AzurirajFunkcijuUOrganuUpravljanja(?,?,?,?,?)"/>
+				<delete name="pisg4.usp_ObrisiFunkcijuUOrganuUpravljanja(?)"/>
+            </crud>
+        </table>
+        <table code="Organ upravljanja" name="Organ upravljanja">
+            <groups>
+                <group id="0" name="Ime grupe"/>
+            </groups>
+            <column visible="true" code="Oznaka organa upravljanja" group="0" name="Oznaka organa upravljanja" nullable="false" primary="true" size="20" type="varchar(20)"/>
+            <column visible="true" code="Drž_Oznaka" group="0" name="Drž_Oznaka" nullable="false" primary="false" size="3" type="char(3)">
+                <references refColumn="Država registracije" refTable="Poslovni sistem"/>
+            </column>
+            <column visible="true" code="Identifikator" group="0" name="Identifikator" nullable="false" primary="false" size="" type="bigint">
+                <references refColumn="Identifikator" refTable="Poslovni sistem"/>
+            </column>
+            <column visible="true" code="Naziv" group="0" name="Naziv" nullable="false" primary="false" size="100" type="varchar(100)"/>
+            <column visible="true" code="Opis" group="0" name="Opis" nullable="true" primary="false" size="500" type="varchar(500)"/>
+            <column visible="true" code="Datum osnivanja" group="0" name="Datum osnivanja" nullable="true" primary="false" size="" type="datetime"/>
+            <column visible="true" code="Datum prestanka rada" group="0" name="Datum prestanka rada" nullable="true" primary="false" size="" type="datetime"/>
+            <crud>
+                <create name="pisg4.usp_UnesiOrganUpravljanja(?,?,?,?,?,?,?)"/>
+				<retrieve name="pisg4.usp_DohvatiOrganeUpravljanja"/>
+				<retrieveById name="pisg4.usp_DohvatiOrganUpravljanjaPoId(?)"/>
+				<update name="pisg4.usp_AzurirajOrganUpravljanja(?,?,?,?,?,?,?)"/>
+				<delete name="pisg4.usp_ObrisiOrganUpravljanja(?)"/>
+            </crud>
+        </table>
+    </package>
+        <package name="Aplikativna podrška">
+            <package name="Administracija korisnika">
+            <table code="Atribut" name="Atribut">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Država registracije" group="0" name="Država registracije" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Država registracije" refTable="Resursi"/>
+                </column>
+                <column visible="true" code="Poslovni sistem" group="0" name="Poslovni sistem" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Poslovni sistem" refTable="Resursi"/>
+                </column>
+                <column visible="true" code="Identifikator" group="0" name="Identifikator" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Identifikator" refTable="Resursi"/>
+                </column>
+                <column visible="true" code="Naziv" group="0" name="Naziv" nullable="false" primary="false" size="120" type="varchar(120)"/>
+                <column visible="true" code="Kod" group="0" name="Kod" nullable="false" primary="false" size="30" type="varchar(30)"/>
+				<crud>
+				    <create name="pisg4.usp_UnesiAtribut(?,?,?,?,?)"/>
+				    <retrieve name="pisg4.usp_DohvatiAtribute"/>
+				    <retrieveById name="pisg4.usp_DohvatiAtributPoId(?,?,?)"/>
+				    <update name="pisg4.usp_AzurirajAtribut(?,?,?,?,?)"/>
+				    <delete name="pisg4.usp_ObrisiAtribut(?,?,?)"/>
+				</crud>
+            </table>
+            <table code="Korisnički nalog" name="Korisnički nalog">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Država registracije" group="0" name="Država registracije" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Država registracije" refTable="Registar zaposlenih"/>
+                    <references refColumn="Država registracije" refTable="Poslovni sistem"/>
+                </column>
+                <column visible="true" code="Poslovni sistem" group="0" name="Poslovni sistem" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Poslovni sistem" refTable="Registar zaposlenih"/>
+                    <references refColumn="Identifikator" refTable="Poslovni sistem"/>
+                </column>
+                <column visible="true" code="User ID" group="0" name="User ID" nullable="false" primary="true" size="30" type="varchar(30)"/>
+                <column visible="true" code="Zaposleni" group="0" name="Zaposleni" nullable="false" primary="false" size="" type="int">
+                    <references refColumn="Redni broj evidencije" refTable="Registar zaposlenih"/>
+                </column>
+                <column visible="true" code="Username" group="0" name="Username" nullable="false" primary="false" size="15" type="varchar(15)"/>
+                <column visible="true" code="Password" group="0" name="Password" nullable="true" primary="false" size="256" type="varchar(256)"/>
+                <column visible="true" code="Datum registracije" group="0" name="Datum registracije" nullable="false" primary="false" size="" type="datetime"/>
+                <column visible="true" code="Aktivan" group="0" name="Aktivan" nullable="false" primary="false" size="" type="bit"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiKorisnickiNalog(?,?,?,?,?,?,?,?)"/>
+                    <retrieve name="pisg4.usp_DohvatiKorisnickeNaloge"/>
+                    <retrieveById name="pisg4.usp_DohvatiKorisnickiNalogPoId(?,?,?)"/>
+                    <update name="pisg4.usp_AzurirajKorisnickiNalog(?,?,?,?,?,?,?,?)"/>
+                    <delete name="pisg4.usp_ObrisiKorisnickiNalog(?,?,?)"/>
+                    <retrieveUserId name="pisg4.usp_DohvatiIdKorisnika(?,?)"/>
+                    <retrieveUserRole name="pisg4.usp_DohvatiRoluKorisnika(?)"/>
+                    <retrieveUserById name ="pisg4.usp_DohvatiKorisnikaPoId(?)"/>
+                    <retrieveTableRestrictions name="pisg4.usp_DohvatiRestrikcijeTabela(?)"/>
+                </crud>
+            </table>
+            <table code="Personalna restrikcija" name="Personalna restrikcija">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Država registracije" group="0" name="Država registracije" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Država registracije" refTable="Pripada roli"/>
+                    <references refColumn="Država registracije" refTable="Atribut"/>
+                    <references refColumn="Država registracije" refTable="Tabela"/>
+                </column>
+                <column visible="true" code="Poslovni sistem" group="0" name="Poslovni sistem" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Poslovni sistem" refTable="Pripada roli"/>
+                    <references refColumn="Poslovni sistem" refTable="Atribut"/>
+                    <references refColumn="Poslovni sistem" refTable="Tabela"/>
+                </column>
+                <column visible="true" code="Tabela" group="0" name="Tabela" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Identifikator" refTable="Tabela"/>
+                </column>
+                <column visible="true" code="Atribut" group="0" name="Atribut" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Identifikator" refTable="Atribut"/>
+                </column>
+                <column visible="true" code="Korisnik" group="0" name="Korisnik" nullable="false" primary="true" size="30" type="varchar(30)">
+                    <references refColumn="Korisnik" refTable="Pripada roli"/>
+                </column>
+                <column visible="true" code="Rola" group="0" name="Rola" nullable="false" primary="true" size="2" type="char(2)">
+                    <references refColumn="Oznaka role" refTable="Pripada roli"/>
+                </column>
+                <column visible="true" code="Identifikator" group="0" name="Identifikator" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Identifikator" refTable="Pripada roli"/>
+                </column>
+                <column visible="true" code="Dodavanje" group="0" name="Dodavanje" nullable="false" primary="false" size="" type="bit"/>
+                <column visible="true" code="Brisanje" group="0" name="Brisanje" nullable="false" primary="false" size="" type="bit"/>
+                <column visible="true" code="Izmjena" group="0" name="Izmjena" nullable="false" primary="false" size="" type="bit"/>
+                <column visible="true" code="Pretraga" group="0" name="Pretraga" nullable="false" primary="false" size="" type="bit"/>
+                <crud>
+				    <create name="pisg4.usp_UnesiPersonalnuRestrikciju(?,?,?,?,?,?,?,?,?,?,?)"/>
+				    <retrieve name="pisg4.usp_DohvatiPersonalneRestrikcije"/>
+				    <retrieveById name="pisg4.usp_DohvatiPersonalnuRestrikcijuPoId(?,?,?,?,?,?,?)"/>
+				    <update name="pisg4.usp_AzurirajPersonalnuRestrikciju(?,?,?,?,?,?,?,?,?,?,?)"/>
+				    <delete name="pisg4.usp_ObrisiPersonalnuRestrikciju(?,?,?,?,?,?,?)"/>
+				</crud>
+            </table>
+            <table code="Povezana sa" name="Povezana sa">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Država registracije" group="0" name="Država registracije" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Država registracije" refTable="Tabela"/>
+                    <references refColumn="Država registracije" refTable="Tabela"/>
+                </column>
+                <column visible="true" code="Poslovni sistem" group="0" name="Poslovni sistem" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Poslovni sistem" refTable="Tabela"/>
+                    <references refColumn="Poslovni sistem" refTable="Tabela"/>
+                </column>
+                <column visible="true" code="Tabela" group="0" name="Tabela" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Identifikator" refTable="Tabela"/>
+                </column>
+                <column visible="true" code="Povezana tabela" group="0" name="Povezana tabela" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Identifikator" refTable="Tabela"/>
+                </column>
+					<crud>
+					    <create name="pisg4.usp_UnesiPovezanuSa(?,?,?,?)"/>
+					    <retrieve name="pisg4.usp_DohvatiPovezaneSa"/>
+					    <retrieveById name="pisg4.usp_DohvatiPovezanuSaPoId(?,?,?,?)"/>
+					    <delete name="pisg4.usp_ObrisiPovezanuSa(?,?,?,?)"/>
+					</crud>
+            </table>
+            <table code="Pravo na podsistem" name="Pravo na podsistem">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Država registracije" group="0" name="Država registracije" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Država registracije" refTable="Sistem ili podsistem"/>
+                    <references refColumn="Država registracije" refTable="Rola"/>
+                </column>
+                <column visible="true" code="Poslovni sistem" group="0" name="Poslovni sistem" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Poslovni sistem" refTable="Sistem ili podsistem"/>
+                    <references refColumn="Poslovni sistem" refTable="Rola"/>
+                </column>
+                <column visible="true" code="Sistem" group="0" name="Sistem" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Identifikator" refTable="Sistem ili podsistem"/>
+                </column>
+                <column visible="true" code="Rola" group="0" name="Rola" nullable="false" primary="true" size="2" type="char(2)">
+                    <references refColumn="Oznaka role" refTable="Rola"/>
+                </column>
+                <column visible="true" code="Pristup" group="0" name="Pristup" nullable="false" primary="false" size="" type="bit"/>
+               <crud>
+				    <create name="pisg4.usp_UnesiPravoNaPodsistem(?,?,?,?,?)"/>
+				    <retrieve name="pisg4.usp_DohvatiPravaNaPodsistem"/>
+				    <retrieveById name="pisg4.usp_DohvatiPravoNaPodsistemPoId(?,?,?,?)"/>
+				    <update name="pisg4.usp_AzurirajPravoNaPodsistem(?,?,?,?,?)"/>
+				    <delete name="pisg4.usp_ObrisiPravoNaPodsistem(?,?,?,?)"/>
+				</crud>
+            </table>
+            <table code="Predefinisane role radnih mjesta" name="Predefinisane role radnih mjesta">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Država registracije" group="0" name="Država registracije" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Država registracije" refTable="Katalog radnih mjesta"/>
+                    <references refColumn="Država registracije" refTable="Rola"/>
+                </column>
+                <column visible="true" code="Poslovni sistem" group="0" name="Poslovni sistem" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Poslovni sistem" refTable="Katalog radnih mjesta"/>
+                    <references refColumn="Poslovni sistem" refTable="Rola"/>
+                </column>
+                <column visible="true" code="Radno mjesto" group="0" name="Radno mjesto" nullable="false" primary="true" size="4" type="numeric(4,0)">
+                    <references refColumn="Oznaka" refTable="Katalog radnih mjesta"/>
+                </column>
+                <column visible="true" code="Oznaka role" group="0" name="Oznaka role" nullable="false" primary="true" size="2" type="char(2)">
+                    <references refColumn="Oznaka role" refTable="Rola"/>
+                </column>
+                <crud>
+				    <create name="pisg4.usp_UnesiPredefinisanuRoluRadnogMjesta(?,?,?,?)"/>
+				    <retrieve name="pisg4.usp_DohvatiPredefinisaneRoleRadnihMjesta"/>
+				    <retrieveById name="pisg4.usp_DohvatiPredefinisanuRoluRadnogMjestaPoId(?,?,?,?)"/>
+				    <delete name="pisg4.usp_ObrisiPredefinisanuRoluRadnogMjesta(?,?,?,?)"/>
+				</crud>
+            </table>
+            <table code="Pripada roli" name="Pripada roli">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Država registracije" group="0" name="Država registracije" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Država registracije" refTable="Rola"/>
+                    <references refColumn="Država registracije" refTable="Korisnički nalog"/>
+                </column>
+                <column visible="true" code="Poslovni sistem" group="0" name="Poslovni sistem" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Poslovni sistem" refTable="Rola"/>
+                    <references refColumn="Poslovni sistem" refTable="Korisnički nalog"/>
+                </column>
+                <column visible="true" code="Oznaka role" group="0" name="Oznaka role" nullable="false" primary="true" size="2" type="char(2)">
+                    <references refColumn="Oznaka role" refTable="Rola"/>
+                </column>
+                <column visible="true" code="Korisnik" group="0" name="Korisnik" nullable="false" primary="true" size="30" type="varchar(30)">
+                    <references refColumn="User ID" refTable="Korisnički nalog"/>
+                </column>
+                <column visible="true" code="Identifikator" group="0" name="Identifikator" nullable="false" primary="true" size="" type="bigint"/>
+                <column visible="true" code="Od" group="0" name="Od" nullable="false" primary="false" size="" type="datetime"/>
+                <column visible="true" code="Do" group="0" name="Do" nullable="true" primary="false" size="" type="datetime"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiPripadanjeRoli(?,?,?,?,?,?,?)"/>
+                    <retrieve name="pisg4.usp_DohvatiPripadanjaRolama"/>
+                    <retrieveById name="pisg4.usp_DohvatiPripadanjeRoliPoId(?,?,?,?,?)"/>
+                    <update name="pisg4.usp_AzurirajPripadanjeRoli(?,?,?,?,?,?,?)"/>
+                    <delete name="pisg4.usp_ObrisiPripadanjeRoli(?,?,?,?,?)"/>
+                </crud>
+            </table>
+            <table code="Rola" name="Rola">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Država registracije" group="0" name="Država registracije" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Država registracije" refTable="Poslovni sistem"/>
+                </column>
+                <column visible="true" code="Poslovni sistem" group="0" name="Poslovni sistem" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Identifikator" refTable="Poslovni sistem"/>
+                </column>
+                <column visible="true" code="Oznaka role" group="0" name="Oznaka role" nullable="false" primary="true" size="2" type="char(2)"/>
+                <column visible="true" code="Prioritet" group="0" name="Prioritet" nullable="false" primary="false" size="" type="smallint"/>
+                <column visible="true" code="Naziv role" group="0" name="Naziv role" nullable="false" primary="false" size="80" type="varchar(80)"/>
+                <column visible="true" code="Opis" group="0" name="Opis" nullable="true" primary="false" size="1000" type="varchar(1000)"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiRolu(?,?,?,?,?,?)"/>
+                    <retrieve name="pisg4.usp_DohvatiRole"/>
+                    <retrieveById name="pisg4.usp_DohvatiRoluPoId(?,?,?)"/>
+                    <update name="pisg4.usp_AzurirajRolu(?,?,?,?,?,?)"/>
+                    <delete name="pisg4.usp_ObrisiRolu(?,?,?)"/>
+                </crud>
+            </table>
+            <table code="Restrikcija atributa" name="Restrikcija atributa">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Država registracije" group="0" name="Država registracije" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Država registracije" refTable="Atribut"/>
+                    <references refColumn="Država registracije" refTable="Rola"/>
+                </column>
+                <column visible="true" code="Poslovni sistem" group="0" name="Poslovni sistem" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Identifikator" refTable="Atribut"/>
+                </column>
+                <column visible="true" code="Atribut" group="0" name="Atribut" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Poslovni sistem" refTable="Atribut"/>
+                    <references refColumn="Poslovni sistem" refTable="Rola"/>
+                </column>
+                <column visible="true" code="Rola" group="0" name="Rola" nullable="false" primary="true" size="2" type="char(2)">
+                    <references refColumn="Oznaka role" refTable="Rola"/>
+                </column>
+                <column visible="true" code="Dodavanje" group="0" name="Dodavanje" nullable="false" primary="false" size="" type="bit"/>
+                <column visible="true" code="Izmjena" group="0" name="Izmjena" nullable="false" primary="false" size="" type="bit"/>
+                <column visible="true" code="Brisanje" group="0" name="Brisanje" nullable="false" primary="false" size="" type="bit"/>
+                <column visible="true" code="Pretraga" group="0" name="Pretraga" nullable="false" primary="false" size="" type="bit"/>
+                <crud>
+			        <create name="pisg4.usp_UnesiRestrikcijuAtributa(?,?,?,?,?,?,?,?)"/>
+			        <retrieve name="pisg4.usp_DohvatiRestrikcijeAtributa"/>
+			        <retrieveById name="pisg4.usp_DohvatiRestrikcijuAtributaPoId(?,?,?,?)"/>
+			        <update name="pisg4.usp_AzurirajRestrikcijuAtributa(?,?,?,?,?,?,?,?)"/>
+			        <delete name="pisg4.usp_ObrisiRestrikcijuAtributa(?,?,?,?)"/>
+			    </crud>
+            </table>
+            <table code="Restrikcija nad tabelama" name="Restrikcija nad tabelama">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Država registracije" group="0" name="Država registracije" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Država registracije" refTable="Rola"/>
+                    <references refColumn="Država registracije" refTable="Tabela"/>
+                </column>
+                <column visible="true" code="Poslovni sistem" group="0" name="Poslovni sistem" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Poslovni sistem" refTable="Rola"/>
+                    <references refColumn="Poslovni sistem" refTable="Tabela"/>
+                </column>
+                <column visible="true" code="Tabela" group="0" name="Tabela" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Identifikator" refTable="Tabela"/>
+                </column>
+                <column visible="true" code="Rola" group="0" name="Rola" nullable="false" primary="true" size="2" type="char(2)">
+                    <references refColumn="Oznaka role" refTable="Rola"/>
+                </column>
+                <column visible="true" code="Dodavanje" group="0" name="Dodavanje" nullable="false" primary="false" size="" type="bit"/>
+                <column visible="true" code="Brisanje" group="0" name="Brisanje" nullable="false" primary="false" size="" type="bit"/>
+                <column visible="true" code="Izmjena" group="0" name="Izmjena" nullable="false" primary="false" size="" type="bit"/>
+                <column visible="true" code="Pretraga" group="0" name="Pretraga" nullable="false" primary="false" size="" type="bit"/>
+                   <crud>
+			        <create name="pisg4.usp_UnesiRestrikcijuNadTabelama(?,?,?,?,?,?,?,?)"/>
+			        <retrieve name="pisg4.usp_DohvatiRestrikcijeNadTabelama"/>
+			        <retrieveById name="pisg4.usp_DohvatiRestrikcijuNadTabelamaPoId(?,?,?,?)"/>
+			        <update name="pisg4.usp_AzurirajRestrikcijuNadTabelama(?,?,?,?,?,?,?,?)"/>
+			        <delete name="pisg4.usp_ObrisiRestrikcijuNadTabelama(?,?,?,?)"/>
+			    </crud>
+            </table>
+            <table code="Resursi" name="Resursi">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Država registracije" group="0" name="Država registracije" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Država registracije" refTable="Poslovni sistem"/>
+                </column>
+                <column visible="true" code="Poslovni sistem" group="0" name="Poslovni sistem" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Identifikator" refTable="Poslovni sistem"/>
+                </column>
+                <column visible="true" code="Identifikator" group="0" name="Identifikator" nullable="false" primary="true" size="" type="bigint"/>
+                <column visible="true" code="Naziv" group="0" name="Naziv" nullable="false" primary="false" size="120" type="varchar(120)"/>
+                <column visible="true" code="Kod" group="0" name="Kod" nullable="false" primary="false" size="30" type="varchar(30)"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiResurs(?,?,?,?,?)"/>
+			        <retrieve name="pisg4.usp_DohvatiResurse"/>
+			        <retrieveById name="pisg4.usp_DohvatiResursPoId(?,?,?)"/>
+			        <update name="pisg4.usp_AzurirajResurs(?,?,?,?,?)"/>
+			        <delete name="pisg4.usp_ObrisiResurs(?,?,?)"/>
+                </crud>
+            </table>
+            <table code="Tabela" name="Tabela">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Država registracije" group="0" name="Država registracije" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Država registracije" refTable="Resursi"/>
+                </column>
+                <column visible="true" code="Poslovni sistem" group="0" name="Poslovni sistem" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Poslovni sistem" refTable="Resursi"/>
+                </column>
+                <column visible="true" code="Identifikator" group="0" name="Identifikator" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Identifikator" refTable="Resursi"/>
+                </column>
+                <column visible="true" code="Naziv" group="0" name="Naziv" nullable="false" primary="false" size="120" type="varchar(120)"/>
+                <column visible="true" code="Kod" group="0" name="Kod" nullable="false" primary="false" size="30" type="varchar(30)"/>
+                <crud>
+                    <create name="pisg4.usp_UnesiTabelu(?,?,?,?,?)"/>
+			        <retrieve name="pisg4.usp_DohvatiTabele"/>
+			        <retrieveById name="pisg4.usp_DohvatiTabeluPoId(?,?,?)"/>
+			        <update name="pisg4.usp_AzurirajTabelu(?,?,?,?,?)"/>
+			        <delete name="pisg4.usp_ObrisiTabelu(?,?,?)"/>
+                </crud>
+            </table>
+            <table code="Sadrži atribute" name="Sadrži atribute">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Država registracije" group="0" name="Država registracije" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Država registracije" refTable="Atribut"/>
+                    <references refColumn="Država registracije" refTable="Tabela"/>
+                </column>
+                <column visible="true" code="Poslovni sistem" group="0" name="Poslovni sistem" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Poslovni sistem" refTable="Atribut"/>
+                    <references refColumn="Poslovni sistem" refTable="Tabela"/>
+                </column>
+                <column visible="true" code="Tabela" group="0" name="Tabela" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Identifikator" refTable="Tabela"/>
+                </column>
+                <column visible="true" code="Atribut" group="0" name="Atribut" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Identifikator" refTable="Atribut"/>
+                </column>
+                 <crud>
+			        <create name="pisg4.usp_UnesiSadrziAtribute(?,?,?,?)"/>
+			        <retrieve name="pisg4.usp_DohvatiSadrziAtribute"/>
+			        <retrieveById name="pisg4.usp_DohvatiSadrziAtributePoId(?,?,?,?)"/>
+			        <delete name="pisg4.usp_ObrisiSadrziAtribute(?,?,?,?)"/>
+			     </crud>
+            </table>
+            <table code="Sadrži podsisteme" name="Sadrži podsisteme">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Država registracije" group="0" name="Država registracije" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Država registracije" refTable="Sistem ili podsistem"/>
+                    <references refColumn="Država registracije" refTable="Sistem ili podsistem"/>
+                </column>
+                <column visible="true" code="Poslovni sistem" group="0" name="Poslovni sistem" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Poslovni sistem" refTable="Sistem ili podsistem"/>
+                    <references refColumn="Poslovni sistem" refTable="Sistem ili podsistem"/>
+                </column>
+                <column visible="true" code="Sistem" group="0" name="Sistem" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Identifikator" refTable="Sistem ili podsistem"/>
+                </column>
+                <column visible="true" code="Podsistem" group="0" name="Podsistem" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Identifikator" refTable="Sistem ili podsistem"/>
+                </column>
+                 <crud>
+			        <create name="pisg4.usp_UnesiSadrziPodsisteme(?,?,?,?)"/>
+			        <retrieve name="pisg4.usp_DohvatiSadrziPodsisteme"/>
+			        <retrieveById name="pisg4.usp_DohvatiSadrziPodsistemePoId(?,?,?,?)"/>
+			        <delete name="pisg4.usp_ObrisiSadrziPodsisteme(?,?,?,?)"/>
+			    </crud>
+            </table>
+            <table code="Sadrži tabele" name="Sadrži tabele">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Država registracije" group="0" name="Država registracije" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Država registracije" refTable="Tabela"/>
+                    <references refColumn="Država registracije" refTable="Sistem ili podsistem"/>
+                </column>
+                <column visible="true" code="Poslovni sistem" group="0" name="Poslovni sistem" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Poslovni sistem" refTable="Tabela"/>
+                    <references refColumn="Poslovni sistem" refTable="Sistem ili podsistem"/>
+                </column>
+                <column visible="true" code="Sistem" group="0" name="Sistem" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Identifikator" refTable="Sistem ili podsistem"/>
+                </column>
+                <column visible="true" code="Tabela" group="0" name="Tabela" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Identifikator" refTable="Tabela"/>
+                </column>
+                <crud>
+			        <create name="pisg4.usp_UnesiSadrziTabele(?,?,?,?)"/>
+			        <retrieve name="pisg4.usp_DohvatiSadrziTabele"/>
+			        <retrieveById name="pisg4.usp_DohvatiSadrziTabelePoId(?,?,?,?)"/>
+			        <delete name="pisg4.usp_ObrisiSadrziTabele(?,?,?,?)"/>
+			    </crud>
+            </table>
+            <table code="Sistem ili podsistem" name="Sistem ili podsistem">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Država registracije" group="0" name="Država registracije" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Država registracije" refTable="Resursi"/>
+                </column>
+                <column visible="true" code="Poslovni sistem" group="0" name="Poslovni sistem" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Poslovni sistem" refTable="Resursi"/>
+                </column>
+                <column visible="true" code="Identifikator" group="0" name="Identifikator" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Identifikator" refTable="Resursi"/>
+                </column>
+                <column visible="true" code="Naziv" group="0" name="Naziv" nullable="false" primary="false" size="120" type="varchar(120)"/>
+                <column visible="true" code="Kod" group="0" name="Kod" nullable="false" primary="false" size="30" type="varchar(30)"/>
+                <crud>
+			        <create name="pisg4.usp_UnesiSistemIliPodsistem(?,?,?,?,?)"/>
+			        <retrieve name="pisg4.usp_DohvatiSistemeIliPodsisteme"/>
+			        <retrieveById name="pisg4.usp_DohvatiSistemIliPodsistemPoId(?,?,?)"/>
+			        <update name="pisg4.usp_AzurirajSistemIliPodsistem(?,?,?,?,?)"/>
+			        <delete name="pisg4.usp_ObrisiSistemIliPodsistem(?,?,?)"/>
+			    </crud>
+            </table>
+            <table code="Struktura atributa" name="Struktura atributa">
+                <groups>
+                    <group id="0" name="Ime grupe"/>
+                </groups>
+                <column visible="true" code="Država registracije" group="0" name="Država registracije" nullable="false" primary="true" size="3" type="char(3)">
+                    <references refColumn="Država registracije" refTable="Atribut"/>
+                    <references refColumn="Država registracije" refTable="Atribut"/>
+                </column>
+                <column visible="true" code="Poslovni sistem" group="0" name="Poslovni sistem" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Poslovni sistem" refTable="Atribut"/>
+                    <references refColumn="Poslovni sistem" refTable="Atribut"/>
+                </column>
+                <column visible="true" code="Atribut" group="0" name="Atribut" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Identifikator" refTable="Atribut"/>
+                </column>
+                <column visible="true" code="Sadržani atribut" group="0" name="Sadržani atribut" nullable="false" primary="true" size="" type="bigint">
+                    <references refColumn="Identifikator" refTable="Atribut"/>
+                </column>
+                 <crud>
+			        <create name="pisg4.usp_UnesiStrukturuAtributa(?,?,?,?)"/>
+			        <retrieve name="pisg4.usp_DohvatiStruktureAtributa"/>
+			        <retrieveById name="pisg4.usp_DohvatiStrukturuAtributaPoId(?,?,?,?)"/>
+			        <delete name="pisg4.usp_ObrisiStrukturuAtributa(?,?,?,?)"/>
+			    </crud>
+            </table>
+        </package>
+    </package>
+</database>

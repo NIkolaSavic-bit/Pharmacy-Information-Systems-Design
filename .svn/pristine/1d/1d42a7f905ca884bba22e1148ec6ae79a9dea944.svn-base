@@ -1,0 +1,265 @@
+package view.component;
+
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.List;
+import java.util.Vector;
+import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import metadata.TableColumnModel;
+import model.ApplicationModel;
+import model.GeneralTableModel;
+
+public class CustomTable extends JPanel {
+
+    private JTable table;
+    private ApplicationModel applicationModel;
+    private GeneralTableModel tableModel;
+    private int selectedRowIndex = -1;
+    private ImageIcon fkIcon;
+    private Runnable selectionChangeListener;
+
+    public CustomTable(
+        GeneralTableModel tableModel,
+        ApplicationModel applicationModel,
+        Runnable selectionChangeListener
+    ) {
+        this.tableModel = tableModel;
+        this.applicationModel = applicationModel;
+        this.selectionChangeListener = selectionChangeListener;
+
+
+        Image fkImage = new ImageIcon("src/resources/icons/fk.png").getImage();
+        Image scaledImageFk = fkImage.getScaledInstance(10, 10, Image.SCALE_SMOOTH);
+        fkIcon = new ImageIcon(scaledImageFk);
+
+        setLayout(new BorderLayout());
+
+        initTable();
+    }
+
+    private void initTable() {
+        String[] columnNames = new String[tableModel.getColumns().size() + 1];
+        columnNames[0] = "#";
+        for (int index = 0; index < tableModel.getColumns().size(); index++) {
+            columnNames[index + 1] = tableModel.getColumns().get(index).getColumLabel();
+        }
+
+        DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
+        int rowNumber = 1;
+        for (List<Object> rowData : tableModel.getData()) {
+            Vector<Object> displayedRow = new Vector<>();
+            displayedRow.add(rowNumber++);
+            displayedRow.addAll(rowData);
+            model.addRow(displayedRow);
+        }
+
+        table = new JTable(model);
+        table.setRowHeight(30);
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        table.getTableHeader().setReorderingAllowed(false);
+        table.getColumnModel().getColumn(0).setPreferredWidth(45);
+        table.getColumnModel().getColumn(0).setMaxWidth(60);
+
+
+        for (int i = 0; i < tableModel.getColumns().size(); i++) {
+            table.getColumnModel().getColumn(i + 1).setCellRenderer(
+                new DefaultTableCellRenderer() {
+                    @Override
+                    public Component getTableCellRendererComponent(
+                        JTable table,
+                        Object value,
+                        boolean isSelected,
+                        boolean hasFocus,
+                        int row,
+                        int column
+                    ) {
+                        JPanel panel = new JPanel(new BorderLayout());
+                        panel.setOpaque(true);
+                        panel.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
+
+                        if (isSelected) {
+                            panel.setBackground(table.getSelectionBackground());
+                        } else {
+                            panel.setBackground(
+                                row % 2 == 0 ? new Color(173, 216, 230) : new Color(255, 255, 255)
+                            );
+                        }
+
+                        JLabel textLabel = new JLabel(value != null ? value.toString() : "");
+                        textLabel.setOpaque(false);
+                        textLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
+
+                        panel.add(textLabel, BorderLayout.WEST);
+
+                        int modelColumn = table.convertColumnIndexToModel(column);
+                        TableColumnModel columnMeta = tableModel.getColumns().get(modelColumn - 1);
+                        if ("bit".equalsIgnoreCase(columnMeta.getColumType())) {
+                            textLabel.setText(value == null ? "" : isTrue(value) ? "Da" : "Ne");
+                        }
+                        if (columnMeta.getRefTable() != null && !columnMeta.getRefTable().isEmpty()) {
+                            JLabel iconLabel = new JLabel(fkIcon);
+                            iconLabel.setOpaque(false);
+                            iconLabel.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 0));
+
+                            panel.add(iconLabel, BorderLayout.EAST);
+                        }
+
+                        return panel;
+                    }
+                }
+            );
+        }
+
+        table.getColumnModel().getColumn(0).setCellRenderer(
+            new DefaultTableCellRenderer() {
+                @Override
+                public Component getTableCellRendererComponent(
+                    JTable table,
+                    Object value,
+                    boolean isSelected,
+                    boolean hasFocus,
+                    int row,
+                    int column
+                ) {
+                    Component component = super.getTableCellRendererComponent(
+                        table,
+                        value,
+                        isSelected,
+                        hasFocus,
+                        row,
+                        column
+                    );
+                    setHorizontalAlignment(SwingConstants.CENTER);
+                    if (!isSelected) {
+                        component.setBackground(
+                            row % 2 == 0 ? new Color(173, 216, 230) : new Color(255, 255, 255)
+                        );
+                    }
+                    return component;
+                }
+            }
+        );
+
+        for (int index = tableModel.getColumns().size() - 1; index >= 0; index--) {
+            if (!tableModel.getColumns().get(index).isVisible()) {
+                table.removeColumn(table.getColumnModel().getColumn(index + 1));
+            }
+        }
+
+        JScrollPane scrollPane = new JScrollPane(table);
+        add(scrollPane, BorderLayout.CENTER);
+
+        table.addMouseListener(
+            new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    int row = table.rowAtPoint(e.getPoint());
+                    int col = table.columnAtPoint(e.getPoint());
+                    if (row < 0 || col < 0) return;
+
+                    selectedRowIndex = row;
+
+                    if (col == 0) return;
+                    int modelColumn = table.convertColumnIndexToModel(col);
+                    TableColumnModel column = tableModel.getColumns().get(modelColumn - 1);
+
+                    if (e.getClickCount() == 2 && SwingUtilities.isLeftMouseButton(e)) {
+                        if (
+                            column.getRefTable() != null &&
+                            !column.getRefTable().isEmpty() &&
+                            column.getRefColumn() != null &&
+                            !column.getRefColumn().isEmpty()
+                        ) {
+                            openRefPanel(column.getRefTable());
+                        }
+                    }
+                }
+            }
+        );
+
+        table.getSelectionModel().addListSelectionListener(event -> {
+            if (event.getValueIsAdjusting()) return;
+            selectedRowIndex = table.getSelectedRow();
+            selectionChangeListener.run();
+        });
+    }
+
+    private void openRefPanel(String refTable) {
+        ApplicationModel refAppModel = new ApplicationModel();
+        refAppModel.getContext().setDataModel(refTable);
+
+        GeneralTableModel refTableModel = refAppModel.getContext().getDataModel();
+        if (refTableModel == null) return;
+
+        JFrame frame = new JFrame("Referentna tabela: " + refTable);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        frame.add(new CustomTable(refTableModel, refAppModel, () -> {}));
+        frame.setSize(800, 600);
+        frame.setLocationRelativeTo(null);
+        ImageIcon icon = new ImageIcon("src/resources/icons/" + refTable + ".png");
+        frame.setIconImage(icon.getImage());
+        frame.setVisible(true);
+    }
+
+    private boolean isTrue(Object value) {
+        return Boolean.TRUE.equals(value) ||
+        "1".equals(value.toString()) ||
+        "true".equalsIgnoreCase(value.toString());
+    }
+
+    public int getSelectedRowIndex() {
+        return selectedRowIndex;
+    }
+
+    public JTable getTable() {
+        return table;
+    }
+
+    public void setSelectionChangeListener(Runnable selectionChangeListener) {
+        this.selectionChangeListener = selectionChangeListener == null ? () -> {} : selectionChangeListener;
+    }
+
+    public void setSelectedRowIndex(int selectedRowIndex) {
+        this.selectedRowIndex = selectedRowIndex;
+        if (selectedRowIndex >= 0 && selectedRowIndex < table.getRowCount()) {
+            table.setRowSelectionInterval(selectedRowIndex, selectedRowIndex);
+            table.scrollRectToVisible(table.getCellRect(selectedRowIndex, 0, true));
+        }
+        selectionChangeListener.run();
+    }
+
+    public void selectNextRow() {
+        int rowCount = table.getRowCount();
+        if (rowCount == 0) return;
+        int next = selectedRowIndex < rowCount - 1 ? selectedRowIndex + 1 : 0;
+        setSelectedRowIndex(next);
+    }
+
+    public void selectPreviousRow() {
+        int rowCount = table.getRowCount();
+        if (rowCount == 0) return;
+        int prev = selectedRowIndex > 0 ? selectedRowIndex - 1 : rowCount - 1;
+        setSelectedRowIndex(prev);
+    }
+
+    public void selectFirstRow() {
+        if (table.getRowCount() > 0) setSelectedRowIndex(0);
+    }
+
+    public void selectLastRow() {
+        int lastIndex = table.getRowCount() - 1;
+        if (lastIndex >= 0) setSelectedRowIndex(lastIndex);
+    }
+
+}

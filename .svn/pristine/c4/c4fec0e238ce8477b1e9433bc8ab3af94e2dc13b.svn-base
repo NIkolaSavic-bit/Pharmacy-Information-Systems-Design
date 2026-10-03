@@ -1,0 +1,27 @@
+package database;
+
+import util.ResourcePaths;
+
+public class DBResultSet {
+
+    private DbManipulation dbManipulation = null;
+    DatabaseConfig dbConfig;
+
+    public DBResultSet() {
+        dbConfig = DatabaseConfigParser.parseConfig(ResourcePaths.DATABASE_METADATA);
+
+        this.dbManipulation = DbManipulation.createConnection(
+            DatabaseType.MsSQL_JDBC,
+            dbConfig.getAddress(),
+            dbConfig.getPort(),
+            dbConfig.getDbName(),
+            dbConfig.getUser(),
+            dbConfig.getPassword()
+        );
+    }
+
+    public DbManipulation getDbManipulation() {
+        return dbManipulation;
+    }
+
+}

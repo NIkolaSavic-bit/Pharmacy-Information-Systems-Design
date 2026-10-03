@@ -1,0 +1,44 @@
+package metadata;
+
+import java.io.File;
+import java.io.IOException;
+import javax.xml.parsers.ParserConfigurationException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+import util.XmlDocumentCache;
+
+public class XMLTreeBuilder {
+
+    private final File metadataFile;
+    private final TableAccessPolicy accessPolicy;
+
+    public XMLTreeBuilder(File metadataFile, TableAccessPolicy accessPolicy) {
+        this.metadataFile = metadataFile;
+        this.accessPolicy = accessPolicy;
+    }
+
+    public TreeElement.Package build(String role)
+        throws ParserConfigurationException, SAXException, IOException {
+        Document document = XmlDocumentCache.load(metadataFile);
+        TreeElement.Package root = new TreeElement.Package("Tabele baze podataka");
+        NodeList tables = document.getElementsByTagNameNS("*", "table");
+
+        for (int index = 0; index < tables.getLength(); index++) {
+            Node node = tables.item(index);
+            if (!(node instanceof Element)) continue;
+
+            Element tableElement = (Element) node;
+            String tableName = tableElement.getAttribute("name");
+            if (!accessPolicy.canAccess(role, tableName)) continue;
+
+            TreeElement.Table table = new TreeElement.Table();
+            table.code = tableElement.getAttribute("code");
+            table.name = tableName;
+            root.addElement(table);
+        }
+        return root;
+    }
+}

@@ -1,0 +1,10 @@
+/**
+ * Sadrži komponente aplikacije PharmEase.
+ */
+module Pharmease {
+    requires java.desktop;
+    requires JTattoo;
+    requires java.xml;
+    requires java.sql;
+    requires jasperreports;
+}

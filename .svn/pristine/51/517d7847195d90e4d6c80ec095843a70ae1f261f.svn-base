@@ -1,0 +1,24 @@
+package view.component;
+
+import javax.swing.JTree;
+import view.renderer.TreeCellRenderer;
+
+public class CustomTree extends JTree {
+
+    public CustomTree(MetadataTreeModel model) {
+        super(model);
+        setRootVisible(false);
+        setShowsRootHandles(true);
+        setRowHeight(30);
+        setCellRenderer(new TreeCellRenderer());
+    }
+
+    @Override
+    public boolean getScrollableTracksViewportWidth() {
+        if (getPreferredSize().width < getParent().getWidth()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+}

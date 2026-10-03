@@ -1,0 +1,15 @@
+package state;
+
+import model.ApplicationModel;
+
+public class IdleState extends ApplicationState {
+
+    public IdleState(ApplicationModel applicationModel) {
+        super(applicationModel);
+    }
+
+    @Override
+    public String getDisplayName() {
+        return "Neaktivno";
+    }
+}

@@ -1,0 +1,58 @@
+package view.component;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JSpinner;
+import javax.swing.text.JTextComponent;
+
+/**
+ * Izvlači unesene vrijednosti iz polja forme.
+ */
+public final class FormValueExtractor {
+
+    private FormValueExtractor() {}
+
+    /**
+     * Čita vrijednosti iz Swing polja forme i indeksira ih nazivom kolone.
+     *
+     * @param inputFields polja forme indeksirana nazivom kolone
+     * @return mapa naziva kolona i unesenih vrijednosti
+     */
+    public static Map<String, String> extract(Map<String, JComponent> inputFields) {
+        Map<String, String> values = new LinkedHashMap<>();
+
+        for (Map.Entry<String, JComponent> entry : inputFields.entrySet()) {
+            values.put(entry.getKey(), extractValue(entry.getValue()));
+        }
+        return values;
+    }
+
+    private static String extractValue(JComponent component) {
+        if (component instanceof JTextComponent) {
+            String text = ((JTextComponent) component).getText();
+            return text == null || text.trim().isEmpty() ? null : text;
+        }
+        if (component instanceof JComboBox) {
+            Object selected = ((JComboBox<?>) component).getSelectedItem();
+            return selected == null || selected.toString().trim().isEmpty() ? null : selected.toString();
+        }
+        if (component instanceof JCheckBox) {
+            return Boolean.toString(((JCheckBox) component).isSelected());
+        }
+        if (component instanceof JSpinner) {
+            Object value = ((JSpinner) component).getValue();
+            if (value instanceof java.util.Date) {
+                java.time.LocalDateTime dateTime = ((java.util.Date) value)
+                    .toInstant()
+                    .atZone(java.time.ZoneId.systemDefault())
+                    .toLocalDateTime();
+                return dateTime.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            }
+            return value == null ? null : value.toString();
+        }
+        return component == null ? null : component.toString();
+    }
+}

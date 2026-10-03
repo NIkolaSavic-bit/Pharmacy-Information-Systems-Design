@@ -1,0 +1,92 @@
+CRUD tabela – checklist
+
+Tabele
+
+* [ ] Država
+* [ ] Region
+* [ ] Glavni grad
+* [ ] Tip regiona
+* [ ] Naseljeno mjesto
+* [ ] Opština
+* [ ] Mjesna zajednica
+* [ ] Sastav država
+* [ ] Državno uređenje
+* [ ] Istorija uređenja
+* [ ] Pravni nasljednik
+* [ ] Sastav regiona
+* [ ] Obuhvata naselja
+* [ ] Obuhvata opštine
+* [ ] Mjesno pokrivanje naselja
+* [ ] Izabrani tipovi organizacione jedinice
+* [ ] Tip organizacione jedinice
+* [ ] Poslovni sistem
+* [ ] Organizaciona jedinica
+* [ ] Složena organizaciona jedinica
+* [ ] Složeni poslovni sistem
+* [ ] Tip poslovnog sistema
+* [ ] Tip složenog poslovnog sistema
+* [ ] Adresni podaci
+* [ ] Državljanstvo
+* [ ] Katalog radnih mjesta
+* [ ] Katalog zanimanja
+* [ ] Katalog zvanja
+* [ ] Lista zvanja
+* [ ] Registar zaposlenih
+* [ ] Nivo obrazovanja
+* [ ] Obrazuju za
+* [ ] Podaci o obrazovanju
+* [ ] Potrebna školska sprema
+* [ ] Potrebne spreme
+* [ ] Raspored na radna mjesta
+* [ ] Školska sprema
+* [ ] Vrsta radnog odnosa
+* [ ] Osnovno sredstvo
+* [ ] Vrsta osnovnog sredstva
+* [ ] Zaduženje osnovnog sredstva
+* [ ] Sitan inventar
+* [ ] Vrsta sitnog inventara
+* [ ] Stanje sitnog inventara
+* [ ] Dobavljač
+* [ ] Proizvođač
+* [ ] Farmaceutski oblik
+* [ ] ATC oznaka
+* [ ] Lijek
+* [ ] Serija lijeka
+* [ ] Cijena lijeka
+* [ ] Stanje zalihe
+* [ ] Dobavljač lijeka
+* [ ] Prodaja
+* [ ] Način plaćanja
+* [ ] Stavka prodaje
+* [ ] Račun
+* [ ] Pacijent
+* [ ] Recept
+* [ ] Status nabavke
+* [ ] Stavka nabavke
+* [ ] Nabavka
+* [ ] Status transfera
+* [ ] Stavka transfera
+* [ ] Transfer
+* [ ] Otpis
+* [ ] Razlog otpisa
+* [ ] Stavka otpisa
+* [ ] Članstvo u organu upravljanja
+* [ ] Funkcija u organu upravljanja
+* [ ] Organ upravljanja
+* [ ] Atribut
+* [ ] Korisnički nalog
+* [ ] Personalna restrikcija
+* [ ] Povezana sa
+* [ ] Pravo na podsistem
+* [ ] Predefinisane role radnih mjesta
+* [ ] Pripada roli
+* [ ] Rola
+* [ ] Restrikcija atributa
+* [ ] Restrikcija nad tabelama
+* [ ] Resursi
+* [ ] Tabela
+* [ ] Sadrži atribute
+* [ ] Sadrži podsisteme
+* [ ] Sadrži tabele
+* [ ] Sistem ili podsistem
+* [ ] Struktura atributa

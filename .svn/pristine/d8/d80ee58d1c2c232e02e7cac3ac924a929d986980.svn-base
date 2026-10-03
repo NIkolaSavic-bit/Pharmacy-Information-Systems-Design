@@ -1,0 +1,7 @@
+package database;
+
+public enum DatabaseType {
+    MsSQL_JDBC,
+    MsSQL_JTDS,
+    MySQL,
+}

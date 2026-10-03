@@ -1,0 +1,170 @@
+package view.report;
+
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.sql.Connection;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
+import net.sf.jasperreports.engine.design.JRDesignBand;
+import net.sf.jasperreports.engine.design.JRDesignExpression;
+import net.sf.jasperreports.engine.design.JRDesignField;
+import net.sf.jasperreports.engine.design.JRDesignStaticText;
+import net.sf.jasperreports.engine.design.JRDesignTextField;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.type.VerticalTextAlignEnum;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
+import net.sf.jasperreports.view.JasperViewer;
+import util.ResourcePaths;
+
+public class JasperReportsViewer {
+
+    private Connection connection;
+
+    public JasperReportsViewer() {}
+
+    public JasperReportsViewer(Connection connection) {
+        this.connection = connection;
+    }
+
+    public void showReport(String reportPath) {
+        try {
+            JasperReport jasperReport = JasperCompileManager.compileReport(reportPath);
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, null, connection);
+            showViewer(jasperPrint);
+        } catch (JRException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void showTableReport(JTable table, String title) {
+        List<String> columns = new ArrayList<>();
+        List<List<?>> rows = new ArrayList<>();
+
+        for (int column = 0; column < table.getColumnCount(); column++) {
+            columns.add(table.getColumnName(column));
+        }
+        for (int row = 0; row < table.getRowCount(); row++) {
+            List<Object> values = new ArrayList<>();
+            for (int column = 0; column < table.getColumnCount(); column++) {
+                values.add(table.getValueAt(row, column));
+            }
+            rows.add(values);
+        }
+
+        showDynamicReport(title, columns, rows);
+    }
+
+    public void showDynamicReport(String title, List<String> columns, List<? extends List<?>> rows) {
+        try {
+            JasperDesign design = createReportDesign(columns);
+            JasperReport report = JasperCompileManager.compileReport(design);
+            JasperPrint print = JasperFillManager.fillReport(
+                report,
+                createParameters(title),
+                createDataSource(rows, columns.size())
+            );
+            showViewer(print);
+        } catch (JRException e) {
+            JOptionPane.showMessageDialog(
+                null,
+                "Kreiranje izvještaja nije uspjelo.",
+                "Greška",
+                JOptionPane.ERROR_MESSAGE
+            );
+        }
+    }
+
+    private JasperDesign createReportDesign(List<String> columns) throws JRException {
+        String template = columns.size() <= 5
+            ? ResourcePaths.REPORT_TEMPLATE_VERTICAL
+            : ResourcePaths.REPORT_TEMPLATE_HORIZONTAL;
+        JasperDesign design = JRXmlLoader.load(template);
+        JRDesignBand headerBand = (JRDesignBand) design.getColumnHeader();
+        JRDesignBand detailBand = (JRDesignBand) design.getDetailSection().getBands()[0];
+        int contentWidth = design.getColumnWidth();
+        int columnWidth = contentWidth / columns.size();
+
+        for (int index = 0; index < columns.size(); index++) {
+            int x = index * columnWidth;
+            int width = index == columns.size() - 1 ? contentWidth - x : columnWidth;
+
+            JRDesignField field = new JRDesignField();
+            field.setName("column" + index);
+            field.setValueClass(String.class);
+            design.addField(field);
+
+            JRDesignStaticText header = new JRDesignStaticText();
+            header.setText(columns.get(index));
+            header.setStyleNameReference("ColumnHeader");
+            header.setVerticalTextAlign(VerticalTextAlignEnum.MIDDLE);
+            header.setX(x);
+            header.setY(0);
+            header.setWidth(width);
+            header.setHeight(headerBand.getHeight());
+            headerBand.addElement(header);
+
+            JRDesignTextField value = new JRDesignTextField();
+            value.setExpression(new JRDesignExpression("$F{column" + index + "}"));
+            value.setStyleNameReference("DetailCell");
+            value.setVerticalTextAlign(VerticalTextAlignEnum.MIDDLE);
+            value.setX(x);
+            value.setY(0);
+            value.setWidth(width);
+            value.setHeight(detailBand.getHeight());
+            detailBand.addElement(value);
+        }
+
+        return design;
+    }
+
+    private Map<String, Object> createParameters(String title) {
+        LocalDateTime printedAt = LocalDateTime.now();
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("REPORT_TITLE", title);
+        parameters.put("PRINT_DATE", printedAt.format(DateTimeFormatter.ofPattern("dd.MM.yyyy.")));
+        parameters.put("PRINT_TIME", printedAt.format(DateTimeFormatter.ofPattern("HH:mm:ss")));
+        parameters.put("LOGO_PATH", ResourcePaths.REPORT_LOGO);
+        return parameters;
+    }
+
+    private JRMapCollectionDataSource createDataSource(
+        List<? extends List<?>> rows,
+        int columnCount
+    ) {
+        List<Map<String, ?>> reportRows = new ArrayList<>();
+
+        for (List<?> row : rows) {
+            Map<String, Object> values = new HashMap<>();
+            for (int column = 0; column < columnCount; column++) {
+                Object value = column < row.size() ? row.get(column) : null;
+                if (value instanceof Boolean) value = (Boolean) value ? "Da" : "Ne";
+                values.put("column" + column, value == null ? "" : value.toString());
+            }
+            reportRows.add(values);
+        }
+        return new JRMapCollectionDataSource(reportRows);
+    }
+
+    private void showViewer(JasperPrint print) {
+        JasperViewer viewer = new JasperViewer(print, false);
+        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+        int width = (int) (screen.width * 0.9);
+        int height = (int) (screen.height * 0.85);
+
+        viewer.setSize(width, height);
+        viewer.setLocationRelativeTo(null);
+        viewer.setVisible(true);
+    }
+}

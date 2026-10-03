@@ -1,0 +1,10 @@
+package state;
+
+import model.ApplicationModel;
+
+public class IdleState extends ApplicationState {
+
+    public IdleState(ApplicationModel applicationModel) {
+        super(applicationModel);
+    }
+}

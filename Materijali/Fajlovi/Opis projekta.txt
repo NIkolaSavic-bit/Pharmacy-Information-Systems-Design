@@ -1,0 +1,7 @@
+Projekat:	Apoteke
+Opis:	Informacioni sistem za podršku u procesu upravljanja, organizacije i operativnog rada lanca apoteka (izdavanja, prodaja nabavka i opskrba ljekovima).
+Smjernice:	
+-	Upravljanje apotekama – može biti više poslovnica u vlasništvu privrednog subjekta
+-	Upravljanje lijekovima (izdavanje/prodaja, nabavka, prodaja/izdavanje uz propisani recept od strane doktora)
+-	Upravljanje nabavkom i skladištem lijekova – svaka apoteka ima svoje skladište lijekova i može lijekove prodavati drugim apotekama
+-	Kreiranje i pregled izvještaja o perodičnoj (mjesec, godina) prodaji lijekova, stanju u skladištu i sl.

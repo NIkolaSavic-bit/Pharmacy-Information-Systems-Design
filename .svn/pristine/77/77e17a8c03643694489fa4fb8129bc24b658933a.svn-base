@@ -1,0 +1,49 @@
+package view.component;
+
+import javax.swing.tree.DefaultTreeModel;
+import metadata.TreeElement;
+
+public class MetadataTreeModel extends DefaultTreeModel {
+
+    private static final long serialVersionUID = 1L;
+    private final TreeElement.Package rootPackage;
+
+    public MetadataTreeModel(TreeElement.Package rootPackage) {
+        super(null);
+        this.rootPackage = rootPackage;
+    }
+
+    @Override
+    public Object getChild(Object parent, int index) {
+        if (parent instanceof TreeElement.Package) {
+            return ((TreeElement.Package) parent).getElementAt(index);
+        }
+        return null;
+    }
+
+    @Override
+    public int getChildCount(Object parent) {
+        if (parent instanceof TreeElement.Package) {
+            return ((TreeElement.Package) parent).getAllElements().size();
+        }
+        return 0;
+    }
+
+    @Override
+    public int getIndexOfChild(Object parent, Object child) {
+        if (parent instanceof TreeElement.Package && child instanceof TreeElement) {
+            return ((TreeElement.Package) parent).getIndexOfElement((TreeElement) child);
+        }
+        return -1;
+    }
+
+    @Override
+    public Object getRoot() {
+        return rootPackage;
+    }
+
+    @Override
+    public boolean isLeaf(Object node) {
+        return node instanceof TreeElement.Table;
+    }
+}

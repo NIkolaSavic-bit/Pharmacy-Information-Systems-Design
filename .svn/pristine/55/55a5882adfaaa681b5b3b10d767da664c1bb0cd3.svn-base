@@ -1,0 +1,50 @@
+package util;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+
+public final class XmlDocumentCache {
+
+    private static final Map<String, CachedDocument> CACHE = new HashMap<>();
+
+    private XmlDocumentCache() {}
+
+    public static synchronized Document load(File file)
+        throws ParserConfigurationException, SAXException, IOException {
+        File canonicalFile = file.getCanonicalFile();
+        String path = canonicalFile.getPath();
+        long lastModified = canonicalFile.lastModified();
+        CachedDocument cached = CACHE.get(path);
+
+        if (cached != null && cached.lastModified == lastModified) return cached.document;
+
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(true);
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document document = builder.parse(canonicalFile);
+        CACHE.put(path, new CachedDocument(lastModified, document));
+        return document;
+    }
+
+    public static synchronized void invalidate(File file) throws IOException {
+        CACHE.remove(file.getCanonicalPath());
+    }
+
+    private static class CachedDocument {
+
+        private final long lastModified;
+        private final Document document;
+
+        private CachedDocument(long lastModified, Document document) {
+            this.lastModified = lastModified;
+            this.document = document;
+        }
+    }
+}

@@ -1,0 +1,26 @@
+package view;
+
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import model.ApplicationModel;
+import view.window.LoginWindow;
+
+public class ViewInitializer {
+
+    public ViewInitializer(ApplicationModel applicationModel) {
+        try {
+            com.jtattoo.plaf.aero.AeroLookAndFeel.setTheme("Large-Font", "", "Pharmease");
+            UIManager.setLookAndFeel("com.jtattoo.plaf.aero.AeroLookAndFeel");
+        } catch (
+            ClassNotFoundException
+            | InstantiationException
+            | IllegalAccessException
+            | UnsupportedLookAndFeelException e
+        ) {
+
+            e.printStackTrace();
+        }
+
+        new LoginWindow(applicationModel, null);
+    }
+}

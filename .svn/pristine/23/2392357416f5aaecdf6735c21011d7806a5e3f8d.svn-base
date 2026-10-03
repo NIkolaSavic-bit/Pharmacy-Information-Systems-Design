@@ -1,0 +1,73 @@
+package view.component;
+
+import command.Command;
+import command.ReadCommand;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import javax.swing.BorderFactory;
+import javax.swing.JPanel;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import metadata.TableAccessPolicy;
+import metadata.TreeElement;
+import metadata.XMLTreeBuilder;
+import model.ApplicationModel;
+import util.ResourcePaths;
+
+public class Tree extends JPanel {
+
+    private CustomTree customTree = null;
+    private ApplicationModel applicationModel;
+    private Form form;
+
+    public Tree(ApplicationModel applicationModel, Form form) {
+        this.applicationModel = applicationModel;
+        this.form = form;
+        MetadataTreeModel model = createTreeModel(applicationModel);
+        customTree = new CustomTree(model);
+        JScrollPane scrollPane = new JScrollPane(customTree);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+        setPreferredSize(new Dimension(300, 0));
+        setLayout(new BorderLayout());
+        setBackground(new Color(173, 216, 230));
+        setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+
+        customTree.addTreeSelectionListener(e -> {
+            Object selectedNode = customTree.getLastSelectedPathComponent();
+            if (selectedNode != null) {
+                this.form.setVisible(false);
+                Command readCommand = new ReadCommand(applicationModel, selectedNode.toString());
+                if (!readCommand.execute()) {
+                    JOptionPane.showMessageDialog(
+                        null,
+                        "Učitavanje podataka nije uspjelo.",
+                        "Greška",
+                        JOptionPane.ERROR_MESSAGE
+                    );
+                }
+            }
+        });
+        add(scrollPane, BorderLayout.CENTER);
+    }
+
+    private MetadataTreeModel createTreeModel(ApplicationModel applicationModel) {
+        try {
+            XMLTreeBuilder builder = new XMLTreeBuilder(
+                ResourcePaths.databaseMetadataFile(),
+                new TableAccessPolicy()
+            );
+            String role = applicationModel.getContext().getUser().getRole();
+            return new MetadataTreeModel(builder.build(role));
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(
+                null,
+                "Učitavanje strukture tabela nije uspjelo.",
+                "Greška",
+                JOptionPane.ERROR_MESSAGE
+            );
+            return new MetadataTreeModel(new TreeElement.Package("Tabele baze podataka"));
+        }
+    }
+}

@@ -1,0 +1,8 @@
+package view.menu;
+
+public interface Menu {
+    public abstract void idleState();
+    public abstract void activeState();
+    public abstract void createState();
+    public abstract void editState();
+}

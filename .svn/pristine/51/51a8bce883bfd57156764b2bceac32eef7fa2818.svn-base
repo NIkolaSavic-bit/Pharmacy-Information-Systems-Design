@@ -1,0 +1,205 @@
+package model;
+
+import database.DBResultSet;
+import database.DatabaseException;
+import database.DatabaseParameter;
+import database.DbManipulation;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+import metadata.Strategy;
+import metadata.TableColumnModel;
+
+public abstract class GeneralTableModel {
+
+    protected List<TableColumnModel> columns;
+    protected List<List<Object>> data;
+    protected final DBResultSet dBResultSet;
+    protected final Strategy strategy;
+    private final String tableName;
+
+    HashMap<String, String> crudOps = new HashMap<>();
+
+    public GeneralTableModel(String tableName, Strategy strategy, DBResultSet dBResultSet) {
+        if (strategy == null) throw new IllegalArgumentException("Metadata strategy is required.");
+        if (dBResultSet == null) throw new IllegalArgumentException("Database access is required.");
+
+        this.strategy = strategy;
+        this.tableName = tableName;
+        this.dBResultSet = dBResultSet;
+        if (!tableName.isEmpty()) {
+            this.columns = strategy.parseDataModel(tableName);
+            crudOps = strategy.parseCrudOperations(tableName);
+        } else {
+            this.columns = new Vector<>();
+        }
+        this.data = new Vector<>();
+
+        ensureDummyRow();
+    }
+
+    protected DbManipulation getDatabase() {
+        return dBResultSet.getDbManipulation();
+    }
+
+    public int getRowCount() {
+        return this.data.size();
+    }
+
+    public String getTableName() {
+        return tableName;
+    }
+
+    public int getColumnCount() {
+        return this.columns.size();
+    }
+
+    public String getColumnName(int column) {
+        return this.columns.get(column).getColumName();
+    }
+
+    public Object getValueAt(int rowIndex, int columnIndex) {
+        if (data.isEmpty() || rowIndex >= data.size() || columnIndex >= columns.size()) {
+            return null;
+        }
+        return this.data.get(rowIndex).get(columnIndex);
+    }
+
+    public List<TableColumnModel> getColumns() {
+        return columns;
+    }
+
+    public void setColumns(List<TableColumnModel> columns) {
+        this.columns = columns;
+        ensureDummyRow();
+    }
+
+    public List<List<Object>> getData() {
+        return data;
+    }
+
+    public void setData(List<List<Object>> data) {
+        this.data = data;
+        if (data.isEmpty()) {
+            ensureDummyRow();
+        }
+    }
+
+    public Integer getHighestPrimaryKey() {
+        if (columns == null || data == null || data.isEmpty()) return null;
+
+        int pkIndex = -1;
+        for (int i = 0; i < columns.size(); i++) {
+            if (columns.get(i).isPrimaryKey()) {
+                pkIndex = i;
+                break;
+            }
+        }
+
+        if (pkIndex == -1) {
+            return null;
+        }
+
+        Integer max = null;
+        for (List<Object> row : data) {
+            Object value = row.get(pkIndex);
+            if (value instanceof Number) {
+                int intValue = ((Number) value).intValue();
+                if (max == null || intValue > max) {
+                    max = intValue;
+                }
+            }
+        }
+
+        return max;
+    }
+
+    private void ensureDummyRow() {
+        if (data.isEmpty() && columns != null && !columns.isEmpty()) {
+            List<Object> emptyRow = new Vector<>();
+            for (int i = 0; i < columns.size(); i++) {
+                emptyRow.add(null);
+            }
+            data.add(emptyRow);
+        }
+    }
+
+    public boolean getAllData() {
+        this.data.clear();
+        try {
+            this.data.addAll(getDatabase().executeQuery(crudOps.get("retrieve"), getColumnNames()));
+            return true;
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean deleteRow(HashMap<String, Object> columnPKs) {
+        try {
+            return getDatabase().executeUpdate(crudOps.get("delete"), toParameters(columnPKs));
+        } catch (DatabaseException | IllegalArgumentException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public List<Object> getRowById(HashMap<String, Object> columnPKs) {
+        try {
+            return getDatabase().executeSingleRow(
+                crudOps.get("retrieveById"),
+                toParameters(columnPKs),
+                getColumnNames()
+            );
+        } catch (DatabaseException | IllegalArgumentException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public boolean addRow(HashMap<String, String> params) {
+        try {
+            getDatabase().executeUpdate(crudOps.get("create"), toColumnParameters(params));
+            return this.getAllData();
+        } catch (DatabaseException | IllegalArgumentException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean editRow(HashMap<String, String> params) {
+        try {
+            getDatabase().executeUpdate(crudOps.get("update"), toColumnParameters(params));
+            return this.getAllData();
+        } catch (DatabaseException | IllegalArgumentException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private List<String> getColumnNames() {
+        List<String> names = new ArrayList<>();
+        for (TableColumnModel column : columns) {
+            names.add(column.getColumName());
+        }
+        return names;
+    }
+
+    private List<DatabaseParameter> toParameters(Map<String, Object> values) {
+        List<DatabaseParameter> parameters = new ArrayList<>();
+        for (Map.Entry<String, Object> entry : values.entrySet()) {
+            parameters.add(new DatabaseParameter(entry.getKey(), entry.getValue()));
+        }
+        return parameters;
+    }
+
+    private List<DatabaseParameter> toColumnParameters(Map<String, String> values) {
+        List<DatabaseParameter> parameters = new ArrayList<>();
+        for (TableColumnModel column : columns) {
+            parameters.add(new DatabaseParameter(column.getColumType(), values.get(column.getColumName())));
+        }
+        return parameters;
+    }
+}

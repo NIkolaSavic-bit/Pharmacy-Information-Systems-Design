@@ -1,0 +1,253 @@
+package view.component;
+
+import command.Command;
+import command.CreateCommand;
+import command.UpdateCommand;
+import java.awt.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import javax.swing.*;
+import javax.swing.text.JTextComponent;
+import metadata.TableColumnModel;
+import model.ApplicationModel;
+import state.ActiveState;
+import state.ApplicationState;
+import state.CreateState;
+import state.EditState;
+
+public class Form extends JPanel {
+
+    private static final long serialVersionUID = 8945128839816501668L;
+    private ApplicationModel applicationModel;
+    private Map<String, JComponent> inputFields = new LinkedHashMap<>();
+    private JPanel formContentPanel;
+    private ApplicationState state;
+    private Table table;
+
+    public Form(ApplicationModel applicationModel) {
+        this.applicationModel = applicationModel;
+        setLayout(new BorderLayout());
+
+        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        topPanel.setBackground(new Color(200, 220, 240));
+
+        JButton closeButton = new JButton("X");
+        closeButton.setMargin(new Insets(2, 8, 2, 8));
+        closeButton.setFocusPainted(false);
+        closeButton.setBorderPainted(false);
+        closeButton.setBackground(Color.WHITE);
+        closeButton.setForeground(Color.BLACK);
+
+        closeButton.addActionListener(e -> {
+            closeForm();
+        });
+
+        topPanel.add(closeButton, BorderLayout.NORTH);
+
+        add(topPanel, BorderLayout.NORTH);
+
+        setVisible(false);
+
+        formContentPanel = new JPanel();
+        formContentPanel.setBackground(new Color(173, 216, 230));
+        formContentPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+        formContentPanel.setLayout(new GridBagLayout());
+        add(new JScrollPane(formContentPanel), BorderLayout.CENTER);
+    }
+
+    public void renderForm(
+        ApplicationModel model,
+        ApplicationState state,
+        Object rowId,
+        java.util.List<Object> rowData,
+        Table table
+    ) {
+        this.state = state;
+        this.table = table;
+
+        formContentPanel.removeAll();
+        inputFields.clear();
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 15, 10, 15);
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+
+        int row = 0;
+        int col = 0;
+        final int maxFieldsPerCol = 4;
+        FormFieldFactory fieldFactory = new FormFieldFactory(this, model);
+
+        for (TableColumnModel column : model.getContext().getDataModel().getColumns()) {
+            String columnName = column.getColumName();
+            String columnLabel = column.getColumLabel();
+
+            FormFieldFactory.FormField field = fieldFactory.create(column);
+            if (
+                state instanceof CreateState &&
+                !column.isVisible() &&
+                field.getInputComponent() instanceof JCheckBox
+            ) {
+                ((JCheckBox) field.getInputComponent()).setSelected(true);
+            }
+            inputFields.put(columnName, field.getInputComponent());
+            if (!column.isVisible()) continue;
+
+            JLabel label = new JLabel(columnLabel + (column.isNullable() ? "" : "*") + ":");
+            label.setFont(new Font("SansSerif", Font.BOLD, 13));
+
+            gbc.gridx = col * 2;
+            gbc.gridy = row * 2;
+            gbc.gridwidth = 2;
+            formContentPanel.add(label, gbc);
+
+            gbc.gridy = row * 2 + 1;
+
+            formContentPanel.add(field.getDisplayComponent(), gbc);
+
+            row++;
+            if (row >= maxFieldsPerCol) {
+                row = 0;
+                col++;
+            }
+        }
+
+        if (state != null) {
+            this.populateFields(rowData);
+        }
+
+        gbc.gridx = 0;
+        gbc.gridy = maxFieldsPerCol * 2 + 2;
+        gbc.gridwidth = (col + 1) * 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+
+        JPanel buttonPanel = new JPanel(new FlowLayout());
+        JButton submitButton = new JButton("Potvrdi");
+        JButton cancelButton = new JButton("Otkaži");
+
+        submitButton.addActionListener(e -> submit());
+
+        cancelButton.addActionListener(e -> cancel());
+
+        buttonPanel.add(submitButton);
+        buttonPanel.add(cancelButton);
+        formContentPanel.add(buttonPanel, gbc);
+
+        formContentPanel.revalidate();
+        formContentPanel.repaint();
+    }
+
+    private void populateFields(List<Object> rowData) {
+        if (this.state instanceof EditState) {
+            if (rowData != null) {
+                int i = 0;
+                for (TableColumnModel column : applicationModel.getContext().getDataModel().getColumns()) {
+                    JComponent field = inputFields.get(column.getColumName());
+                    Object value = rowData.get(i++);
+
+                    if (field instanceof JTextComponent) {
+                        ((JTextComponent) field).setText(value != null ? value.toString() : "");
+                    } else if (field instanceof JCheckBox) {
+                        ((JCheckBox) field).setSelected(
+                            Boolean.TRUE.equals(value) ||
+                            (value != null && (
+                                "1".equals(value.toString()) ||
+                                "true".equalsIgnoreCase(value.toString())
+                            ))
+                        );
+                    } else if (field instanceof JSpinner) {
+                        setSpinnerValue((JSpinner) field, value);
+                    } else if (field instanceof JComboBox) {
+                        JComboBox<?> comboBox = (JComboBox<?>) field;
+                        if (value != null) {
+                            comboBox.setSelectedItem(value.toString());
+                        } else {
+                            comboBox.setSelectedIndex(-1);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void submit() {
+        if (state == null) return;
+        handleSubmit(applicationModel, table);
+    }
+
+    public void cancel() {
+        formContentPanel.removeAll();
+        formContentPanel.revalidate();
+        formContentPanel.repaint();
+        closeForm();
+    }
+
+    private void handleSubmit(ApplicationModel model, Table table) {
+        Map<String, String> values = collectInputValues();
+
+        if (this.state instanceof EditState) {
+            if (table == null || table.getSelectedRow() < 0) {
+                JOptionPane.showMessageDialog(null, "Izaberite zapis koji želite da uredite.");
+                return;
+            }
+            int response = JOptionPane.showConfirmDialog(
+                null,
+                "Da li ste sigurni da želite da izmjenite ovaj podatak?",
+                "Potvrda izmjene",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+            );
+            if (response != JOptionPane.YES_OPTION) return;
+
+            Command command = new UpdateCommand(model, values);
+            if (command.execute()) {
+                JOptionPane.showMessageDialog(null, "Podatak je uspješno izmjenjen!");
+                closeForm();
+            } else {
+                JOptionPane.showMessageDialog(null, "Izmjena podatka nije uspjela.", "Greška", JOptionPane.ERROR_MESSAGE);
+            }
+        } else if (this.state instanceof CreateState) {
+            Command command = new CreateCommand(model, values);
+            if (command.execute()) {
+                JOptionPane.showMessageDialog(null, "Podatak je uspješno kreiran!");
+                closeForm();
+            } else {
+                JOptionPane.showMessageDialog(null, "Kreiranje podatka nije uspjelo.", "Greška", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    private Map<String, String> collectInputValues() {
+        return FormValueExtractor.extract(inputFields);
+    }
+
+    private void setSpinnerValue(JSpinner spinner, Object value) {
+        if (value == null) return;
+
+        if (value instanceof java.util.Date) {
+            spinner.setValue(value);
+            return;
+        }
+
+        try {
+            spinner.setValue(java.sql.Timestamp.valueOf(value.toString()));
+        } catch (IllegalArgumentException ignored) {
+
+        }
+    }
+
+    private void closeForm() {
+        setVisible(false);
+        if (
+            applicationModel.getApplicationState() instanceof EditState ||
+            applicationModel.getApplicationState() instanceof CreateState
+        ) {
+            applicationModel.changeState(new ActiveState(applicationModel));
+        }
+        Window window = SwingUtilities.getWindowAncestor(this);
+        if (window instanceof JDialog) {
+            window.dispose();
+        }
+    }
+
+}

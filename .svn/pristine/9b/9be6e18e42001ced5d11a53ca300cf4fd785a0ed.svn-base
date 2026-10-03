@@ -1,0 +1,128 @@
+package util;
+
+import java.sql.CallableStatement;
+import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Vector;
+import java.util.regex.*;
+
+public class DataTypeMapper {
+
+    private String typeName;
+    private String numbers;
+    private String[] partsString;
+    private List<Integer> partsNumber = new Vector<Integer>();
+
+    public String extractTypeName(String type) {
+        typeName = null;
+        numbers = null;
+        partsString = new String[0];
+        partsNumber.clear();
+
+        Pattern pattern = Pattern.compile("^([a-zA-Z]+)");
+        Matcher matcher = pattern.matcher(type);
+
+        if (matcher.find()) {
+            typeName = matcher.group(1);
+
+
+
+
+
+
+
+
+
+        }
+
+        return typeName;
+    }
+
+    public void mapDataToType(String type, String value, CallableStatement statement, int index)
+        throws NumberFormatException, SQLException {
+        String resolvedType = extractTypeName(type).toLowerCase();
+
+        if (value == null || value.isEmpty()) {
+            switch (resolvedType) {
+                case "int":
+                case "smallint":
+                case "bigint":
+                    statement.setNull(index, java.sql.Types.INTEGER);
+                    break;
+                case "numeric":
+                case "decimal":
+                case "float":
+                case "real":
+                    statement.setNull(index, java.sql.Types.NUMERIC);
+                    break;
+                case "nvarchar":
+                case "varchar":
+                case "char":
+                case "text":
+                    statement.setNull(index, java.sql.Types.VARCHAR);
+                    break;
+                case "datetime":
+                case "timestamp":
+                    statement.setNull(index, java.sql.Types.TIMESTAMP);
+                    break;
+                case "bit":
+                case "boolean":
+                    statement.setNull(index, java.sql.Types.BOOLEAN);
+                    break;
+                case "image":
+                case "varbinary":
+                case "vbin":
+                    statement.setNull(index, java.sql.Types.VARBINARY);
+                    System.out.println(index + ": " + java.sql.Types.VARBINARY);
+                    break;
+                default:
+                    statement.setNull(index, java.sql.Types.VARCHAR);
+                    break;
+            }
+            return;
+        }
+
+
+        switch (resolvedType) {
+            case "int":
+            case "smallint":
+            case "bigint":
+                statement.setInt(index, Integer.parseInt(value));
+                break;
+            case "numeric":
+            case "decimal":
+            case "float":
+            case "real":
+                java.math.BigDecimal bd = new java.math.BigDecimal(value.trim());
+                statement.setBigDecimal(index, bd);
+                break;
+            case "nvarchar":
+            case "varchar":
+            case "char":
+            case "text":
+                statement.setString(index, value);
+                break;
+            case "datetime":
+            case "timestamp":
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                LocalDateTime dt = LocalDateTime.parse(value, formatter);
+                statement.setObject(index, dt);
+                break;
+            case "bit":
+            case "boolean":
+                boolean boolValue = value.equals("1") || value.equalsIgnoreCase("true");
+                statement.setBoolean(index, boolValue);
+                break;
+            case "image":
+            case "varbinary":
+            case "vbin":
+                statement.setBytes(index, value.getBytes());
+                break;
+            default:
+                statement.setString(index, value);
+                break;
+        }
+    }
+}

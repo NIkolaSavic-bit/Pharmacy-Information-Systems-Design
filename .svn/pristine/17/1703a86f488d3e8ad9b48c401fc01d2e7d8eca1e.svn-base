@@ -1,0 +1,16 @@
+package state;
+
+import java.util.HashMap;
+import model.ApplicationModel;
+
+public class EditState extends ApplicationState {
+
+    public EditState(ApplicationModel applicationModel) {
+        super(applicationModel);
+    }
+
+    @Override
+    public boolean editRow(HashMap<String, String> params) {
+        return applicationModel.getContext().getDataModel().editRow(params);
+    }
+}

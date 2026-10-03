@@ -1,0 +1,55 @@
+package model;
+
+import database.DBResultSet;
+import database.DatabaseException;
+import database.DatabaseParameter;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import metadata.Strategy;
+import metadata.TableColumnModel;
+
+public class DataModel extends GeneralTableModel {
+
+    public DataModel(String tableName, Strategy strategy, DBResultSet dBResultSet) {
+        super(tableName, strategy, dBResultSet);
+        if (!tableName.isEmpty()) this.getAllData();
+    }
+
+    public List<Object> loadFKData(String refTable, String refColumn) {
+        try {
+            List<List<Object>> rows = getDatabase().executeQuery(
+                "udsp_GetFKData",
+                Arrays.asList(
+                    new DatabaseParameter("varchar", refTable),
+                    new DatabaseParameter("varchar", refColumn)
+                ),
+                Collections.singletonList(refColumn)
+            );
+            java.util.ArrayList<Object> values = new java.util.ArrayList<>();
+            for (List<Object> row : rows) {
+                values.add(row.get(0));
+            }
+            return values;
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public String toString() {
+        String returnString = "";
+        for (int i = 0; i < columns.size(); i++) {
+            TableColumnModel column = columns.get(i);
+
+            returnString += column.getColumName() + ": [";
+
+            for (List<Object> tableObject : data) {
+                returnString += tableObject.get(i).toString() + ", ";
+            }
+            returnString += "]\n";
+        }
+        return returnString;
+    }
+}

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport
+    xmlns="http://jasperreports.sourceforge.net/jasperreports"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+    name="PharmEaseHorizontalReport"
+    pageWidth="842"
+    pageHeight="595"
+    orientation="Landscape"
+    columnWidth="782"
+    leftMargin="30"
+    rightMargin="30"
+    topMargin="30"
+    bottomMargin="30">
+
+    <style name="ColumnHeader" mode="Opaque" backcolor="#39758F" forecolor="#FFFFFF" fontName="SansSerif" fontSize="9" isBold="true">
+        <box leftPadding="5" rightPadding="5">
+            <pen lineWidth="0.5" lineColor="#FFFFFF"/>
+        </box>
+    </style>
+
+    <style name="DetailCell" fontName="SansSerif" fontSize="8">
+        <box leftPadding="5" rightPadding="5">
+            <pen lineWidth="0.35" lineColor="#C8DCE7"/>
+        </box>
+    </style>
+
+    <parameter name="REPORT_TITLE" class="java.lang.String"/>
+    <parameter name="PRINT_DATE" class="java.lang.String"/>
+    <parameter name="PRINT_TIME" class="java.lang.String"/>
+    <parameter name="LOGO_PATH" class="java.lang.String"/>
+
+    <title>
+        <band height="88">
+            <rectangle radius="8">
+                <reportElement mode="Opaque" x="0" y="0" width="782" height="76" backcolor="#EDF8FC"/>
+                <graphicElement>
+                    <pen lineWidth="0.5" lineColor="#C8DCE7"/>
+                </graphicElement>
+            </rectangle>
+            <image scaleImage="RetainShape" onErrorType="Blank">
+                <reportElement x="6" y="4" width="68" height="68"/>
+                <imageExpression><![CDATA[$P{LOGO_PATH}]]></imageExpression>
+            </image>
+            <staticText>
+                <reportElement x="84" y="13" width="680" height="15" forecolor="#39758F"/>
+                <textElement>
+                    <font fontName="SansSerif" size="10" isBold="true"/>
+                </textElement>
+                <text><![CDATA[PharmEase]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="84" y="32" width="680" height="28"/>
+                <textElement>
+                    <font fontName="SansSerif" size="17" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{REPORT_TITLE}]]></textFieldExpression>
+            </textField>
+            <line>
+                <reportElement x="0" y="82" width="782" height="1" forecolor="#39758F"/>
+            </line>
+        </band>
+    </title>
+
+    <columnHeader>
+        <band height="26"/>
+    </columnHeader>
+
+    <detail>
+        <band height="22"/>
+    </detail>
+
+    <pageFooter>
+        <band height="24">
+            <line>
+                <reportElement x="0" y="1" width="782" height="1" forecolor="#C8DCE7"/>
+            </line>
+            <textField>
+                <reportElement x="0" y="6" width="300" height="16" forecolor="#526477"/>
+                <textElement>
+                    <font fontName="SansSerif" size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{PRINT_DATE} + " " + $P{PRINT_TIME}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="712" y="5" width="35" height="16" forecolor="#526477"/>
+                <textElement textAlignment="Right">
+                    <font fontName="SansSerif" size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$V{PAGE_NUMBER} + " /"]]></textFieldExpression>
+            </textField>
+            <textField evaluationTime="Report">
+                <reportElement x="750" y="5" width="32" height="16" forecolor="#526477"/>
+                <textElement>
+                    <font fontName="SansSerif" size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+            </textField>
+        </band>
+    </pageFooter>
+</jasperReport>

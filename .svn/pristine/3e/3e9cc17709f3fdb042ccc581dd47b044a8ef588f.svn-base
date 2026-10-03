@@ -1,0 +1,21 @@
+package state;
+
+import java.util.HashMap;
+import model.ApplicationModel;
+
+public class ActiveState extends ApplicationState {
+
+    public ActiveState(ApplicationModel applicationModel) {
+        super(applicationModel);
+    }
+
+    @Override
+    public String getDisplayName() {
+        return "Aktivno";
+    }
+
+    @Override
+    public boolean deleteRow(HashMap<String, Object> columnPKs) {
+        return applicationModel.getContext().getDataModel().deleteRow(columnPKs);
+    }
+}

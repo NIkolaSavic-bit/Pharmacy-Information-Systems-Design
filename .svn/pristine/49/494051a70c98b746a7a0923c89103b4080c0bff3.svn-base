@@ -1,0 +1,12 @@
+package view.menu;
+
+import java.awt.Font;
+import javax.swing.JMenuItem;
+
+public class MenuItem extends JMenuItem {
+
+    public MenuItem(String text) {
+        super(text);
+        setFont(new Font("Arial", Font.PLAIN, 16));
+    }
+}

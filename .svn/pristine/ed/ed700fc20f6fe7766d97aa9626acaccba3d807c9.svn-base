@@ -1,0 +1,113 @@
+package model;
+
+import database.DBResultSet;
+import database.DatabaseException;
+import database.DatabaseParameter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import metadata.Strategy;
+
+public class UserModel extends GeneralTableModel {
+
+    private String userId = "";
+    private String role = "";
+
+    public UserModel(String tableName, Strategy strategy, DBResultSet dBResultSet) {
+        super(tableName, strategy, dBResultSet);
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public boolean logIn(String username, String password) {
+        this.userId = "";
+        this.role = "";
+        this.data.clear();
+
+        try {
+            Object resolvedUserId = getDatabase().executeSingleValue(
+                crudOps.get("retrieveUserId"),
+                Arrays.asList(
+                    new DatabaseParameter("varchar", username),
+                    new DatabaseParameter("varchar", password)
+                ),
+                "User ID"
+            );
+            if (resolvedUserId != null) this.setUserId(resolvedUserId.toString());
+
+            if (!this.userId.isEmpty()) {
+                Object resolvedRole = getDatabase().executeSingleValue(
+                    crudOps.get("retrieveUserRole"),
+                    Collections.singletonList(new DatabaseParameter("varchar", this.userId)),
+                    "Oznaka Role"
+                );
+                if (resolvedRole != null) this.setRole(resolvedRole.toString());
+            }
+        } catch (DatabaseException e) {
+            throw e;
+        }
+
+        if (!this.userId.isEmpty() && !this.role.isEmpty()) {
+            this.data.add(getUserById((Object) this.userId));
+            return true;
+        }
+        return false;
+    }
+
+    public List<Object> getUserById(Object rowId) {
+        String Id = (String) rowId;
+        this.data.clear();
+        try {
+            List<String> columnNames = new ArrayList<>();
+            for (metadata.TableColumnModel column : columns) {
+                columnNames.add(column.getColumName());
+            }
+
+            return getDatabase().executeSingleRow(
+                crudOps.get("retrieveUserById"),
+                Collections.singletonList(new DatabaseParameter("varchar", Id)),
+                columnNames
+            );
+        } catch (DatabaseException e) {
+            throw e;
+        }
+    }
+
+    public Set<String> getRestrictedTables() {
+        Set<String> restrictedTables = new HashSet<>();
+        List<List<Object>> rows = getDatabase().executeQuery(
+            crudOps.get("retrieveTableRestrictions"),
+            Collections.singletonList(new DatabaseParameter("varchar", role)),
+            Collections.singletonList("Tabela")
+        );
+
+        for (List<Object> row : rows) {
+            if (!row.isEmpty() && row.get(0) != null) {
+                restrictedTables.add(row.get(0).toString().trim());
+            }
+        }
+        return restrictedTables;
+    }
+
+    @Override
+    public String toString() {
+        return "UserID: " + userId + " role: " + role;
+    }
+}

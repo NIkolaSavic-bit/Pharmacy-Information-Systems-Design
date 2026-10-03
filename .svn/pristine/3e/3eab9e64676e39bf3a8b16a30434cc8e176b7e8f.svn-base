@@ -1,0 +1,14 @@
+package util;
+
+import java.io.File;
+
+public final class ResourcePaths {
+
+    public static final String DATABASE_METADATA = "src/resources/metadata/scheme.xml";
+
+    private ResourcePaths() {}
+
+    public static File databaseMetadataFile() {
+        return new File(DATABASE_METADATA);
+    }
+}

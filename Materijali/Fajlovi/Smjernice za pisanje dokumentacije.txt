@@ -1,0 +1,15 @@
+Šablon sadrži unaprijed predefinisane sekcije (poglavlja i podpoglavlja), ali u zavisnosti od potrebe projekta (domena problema koji se rješava), određeni elementi mogu biti izostavljeni. Pojašnjenje za pisanje sekcija, potrebno je dobro pročitati, te prije popunjavanja sekcije, definisati šta se želi postići sa istom.
+
+Za ispravno pisanje dokumentacije, neophodno je pratiti pravila za stil pisanja:
+-	koristiti bezlični pasiv,
+-	izbjegavati futur (umjesto "...će biti pokazano" pisati "..je prikazano"),
+-	izbjegavati populistički stil pisanja i subjektivne stavove.
+
+Pokušati, što je više moguće, izbaciti pokazne zamjenice "ovoj", "ovom", "ovaj", itd. – budite određeni, usmjereni i konkretni:
+-	umjesto "...u ovoj iteraciji" bolje je pisati "u iteraciji 1.0....";
+-	umjesto "..u ovom dokumentu.." pisati "...u dokumentu plan iteracija...";
+-	umjesto "Ovaj dokument se odnosi na procjenu ...." pisati "Dokument plan iteracija se odnosi...";
+
+Šablone je potrebno u cjelosti prevesti na naš jezik (ne malo engleski, malo naš): Uvod; Namjena; Područje primjene; Definicije, skraćenice i nabrajanja; Reference; Pregled;...
+
+Dokumentacija ne smije biti "šarena" – nema umjetničke slobode. Svi dokumenti trebaju da budu uniformni (da budu ujednačeni po dizajnu) i da budu ispravno formatirani (fontovi, stilovi i sl.)

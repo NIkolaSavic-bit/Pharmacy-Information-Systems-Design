@@ -1,0 +1,59 @@
+package metadata;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Set;
+import javax.xml.parsers.ParserConfigurationException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+import util.XmlDocumentCache;
+
+public class XMLTreeBuilder {
+
+    private final File metadataFile;
+    private final Set<String> restrictedTables;
+
+    public XMLTreeBuilder(File metadataFile, Set<String> restrictedTables) {
+        this.metadataFile = metadataFile;
+        this.restrictedTables = restrictedTables;
+    }
+
+    public TreeElement.Package build()
+        throws ParserConfigurationException, SAXException, IOException {
+        Document document = XmlDocumentCache.load(metadataFile);
+        TreeElement.Package root = new TreeElement.Package("Tabele baze podataka");
+        addElements(document.getDocumentElement(), root);
+        return root;
+    }
+
+    private void addElements(Element parentElement, TreeElement.Package parentPackage) {
+        NodeList childNodes = parentElement.getChildNodes();
+
+        for (int index = 0; index < childNodes.getLength(); index++) {
+            Node node = childNodes.item(index);
+            if (!(node instanceof Element)) continue;
+
+            Element element = (Element) node;
+            if ("package".equals(element.getLocalName())) {
+                TreeElement.Package childPackage = new TreeElement.Package(element.getAttribute("name"));
+                addElements(element, childPackage);
+                parentPackage.addElement(childPackage);
+            } else if ("table".equals(element.getLocalName())) {
+                addTable(element, parentPackage);
+            }
+        }
+    }
+
+    private void addTable(Element tableElement, TreeElement.Package parentPackage) {
+        String tableCode = tableElement.getAttribute("code");
+        if (restrictedTables.contains(tableCode)) return;
+
+        TreeElement.Table table = new TreeElement.Table();
+        table.code = tableCode;
+        table.name = tableElement.getAttribute("name");
+        parentPackage.addElement(table);
+    }
+}

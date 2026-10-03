@@ -1,0 +1,127 @@
+package view.menu;
+
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import javax.swing.JMenu;
+import javax.swing.JFrame;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import model.ApplicationModel;
+import view.ViewInitializer;
+import view.menu.MenuItem;
+
+/**
+ * Predstavlja meni za operacije nad podacima i aplikacijom.
+ */
+public class FileMenu extends JMenu implements Menu {
+
+    private MenuItem changeXML = null;
+    private MenuItem logOutUser = null;
+    private MenuItem closeApplication = null;
+
+    /**
+     * Inicijalizuje objekat za rad u aplikaciji.
+     *
+     * @param applicationModel centralni model aplikacije
+     */
+    public FileMenu(ApplicationModel applicationModel) {
+        super("Fajl");
+        setMnemonic(KeyEvent.VK_A);
+
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+
+        changeXML = new MenuItem("Promjeni XML");
+        Image changeXMLIcon = toolkit.getImage("src/resources/icons/xml.png");
+        changeXMLIcon = changeXMLIcon.getScaledInstance(16, 16, Image.SCALE_SMOOTH);
+        changeXML.setIcon(new ImageIcon(changeXMLIcon));
+        changeXML.setMnemonic(KeyEvent.VK_X);
+        changeXML.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK));
+        changeXML.addActionListener(e -> {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setAcceptAllFileFilterUsed(false);
+            fileChooser.setFileFilter(new FileNameExtensionFilter("XML fajl (*.xml)", "json", "xml"));
+            fileChooser.showOpenDialog(SwingUtilities.getWindowAncestor(this));
+        });
+        add(changeXML);
+
+        addSeparator();
+
+        logOutUser = new MenuItem("Odjavi se");
+        Image logOutUserIcon = toolkit.getImage("src/resources/icons/logOut.png");
+        logOutUserIcon = logOutUserIcon.getScaledInstance(16, 16, Image.SCALE_SMOOTH);
+        logOutUser.setIcon(new ImageIcon(logOutUserIcon));
+        logOutUser.setMnemonic(KeyEvent.VK_D);
+        logOutUser.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.CTRL_DOWN_MASK));
+        logOutUser.addActionListener(e -> {
+            Window window = SwingUtilities.getWindowAncestor(this);
+            if (window instanceof JFrame) window.dispose();
+            new ViewInitializer(new ApplicationModel());
+        });
+        add(logOutUser);
+
+        closeApplication = new MenuItem("Zatvori aplikaciju");
+        Image closeApplicationIcon = toolkit.getImage("src/resources/icons/close.png");
+        closeApplicationIcon = closeApplicationIcon.getScaledInstance(16, 16, Image.SCALE_SMOOTH);
+        closeApplication.setIcon(new ImageIcon(closeApplicationIcon));
+        closeApplication.setMnemonic(KeyEvent.VK_ESCAPE);
+        closeApplication.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, KeyEvent.ALT_DOWN_MASK));
+        closeApplication.addActionListener(
+            new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    System.exit(0);
+                }
+            }
+        );
+        add(closeApplication);
+
+        setVisible(true);
+    }
+
+    /**
+     * Prilagođava kontrole stanju bez aktivne tabele.
+     */
+    @Override
+    public void idleState() {
+        changeXML.setEnabled(true);
+        logOutUser.setEnabled(true);
+        closeApplication.setEnabled(true);
+    }
+
+    /**
+     * Prilagođava kontrole stanju sa aktivnom tabelom.
+     */
+    @Override
+    public void activeState() {
+        changeXML.setEnabled(true);
+        logOutUser.setEnabled(true);
+        closeApplication.setEnabled(true);
+    }
+
+    /**
+     * Prilagođava kontrole unosu novog reda.
+     */
+    @Override
+    public void createState() {
+        changeXML.setEnabled(true);
+        logOutUser.setEnabled(true);
+        closeApplication.setEnabled(true);
+    }
+
+    /**
+     * Prilagođava kontrole izmjeni izabranog reda.
+     */
+    @Override
+    public void editState() {
+        changeXML.setEnabled(true);
+        logOutUser.setEnabled(true);
+        closeApplication.setEnabled(true);
+    }
+}

@@ -1,0 +1,107 @@
+package view.component;
+
+import java.awt.BorderLayout;
+import java.util.*;
+import javax.swing.JPanel;
+import model.ApplicationModel;
+import observer.Subject;
+import observer.Subscriber;
+
+public class Table extends JPanel implements Subscriber {
+
+    private CustomTable customTable;
+    private ApplicationModel applicationModel;
+    private Runnable selectionChangeListener = () -> {};
+    private String displayedTableName = "";
+
+    public Table(ApplicationModel applicationModel) {
+        this.applicationModel = applicationModel;
+        setLayout(new BorderLayout());
+    }
+
+    public void showTable(ApplicationModel applicationModel) {
+        String newTableName = applicationModel.getContext().getDataModel().getTableName();
+        if (customTable != null) {
+            remove(customTable);
+
+            int selectedIndex = Objects.equals(displayedTableName, newTableName)
+                ? customTable.getSelectedRowIndex()
+                : -1;
+            customTable = new CustomTable(
+                applicationModel.getContext().getDataModel(),
+                applicationModel,
+                selectionChangeListener
+            );
+            if (selectedIndex >= 0) customTable.setSelectedRowIndex(selectedIndex);
+        } else {
+            customTable = new CustomTable(
+                applicationModel.getContext().getDataModel(),
+                applicationModel,
+                selectionChangeListener
+            );
+        }
+        displayedTableName = newTableName;
+        List<List<Object>> data = applicationModel.getContext().getDataModel().getData();
+        boolean hasData = data.stream().anyMatch(col -> col != null && !col.isEmpty());
+
+        if (hasData) {
+            add(customTable, BorderLayout.CENTER);
+            setVisible(true);
+            customTable.setVisible(true);
+        } else {
+            setVisible(false);
+            customTable.setVisible(false);
+        }
+
+        revalidate();
+        repaint();
+    }
+
+    public int getSelectedRow() {
+        if (customTable != null) return customTable.getSelectedRowIndex();
+        return -1;
+    }
+
+    public void selectNextRow() {
+        if (customTable != null) customTable.selectNextRow();
+    }
+
+    public void selectPreviousRow() {
+        if (customTable != null) customTable.selectPreviousRow();
+    }
+
+    public void selectFirstRow() {
+        if (customTable != null) customTable.selectFirstRow();
+    }
+
+    public void selectLastRow() {
+        if (customTable != null) customTable.selectLastRow();
+    }
+
+    public CustomTable getCustomTable() {
+        return customTable;
+    }
+
+    public int getRowCount() {
+        List<List<Object>> data = applicationModel.getContext().getDataModel().getData();
+        return data.stream().anyMatch(row -> row != null && row.stream().anyMatch(Objects::nonNull)) ? data.size() : 0;
+    }
+
+    public String getSelectedTableName() {
+        return applicationModel.getContext().getDataModel().getTableName();
+    }
+
+    public void setSelectionChangeListener(Runnable selectionChangeListener) {
+        this.selectionChangeListener = selectionChangeListener == null ? () -> {} : selectionChangeListener;
+        if (customTable != null) customTable.setSelectionChangeListener(this.selectionChangeListener);
+    }
+
+    @Override
+    public void update(Subject applicationModel) {
+        this.applicationModel = (ApplicationModel) applicationModel;
+        showTable(this.applicationModel);
+
+        revalidate();
+        repaint();
+    }
+}

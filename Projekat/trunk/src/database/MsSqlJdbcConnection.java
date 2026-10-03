@@ -1,0 +1,62 @@
+package database;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.util.Properties;
+
+/**
+ * Uspostavlja vezu sa SQL Server bazom putem JDBC drajvera.
+ */
+public class MsSqlJdbcConnection extends DbConnection {
+
+    /**
+     * Vraća aktivnu JDBC vezu.
+     *
+     * @param address adresa servera baze podataka
+     * @param port port servera baze podataka
+     * @param dbName naziv baze podataka
+     * @param user korisničko ime za pristup bazi
+     * @param password lozinka za pristup bazi
+     * @return aktivnu JDBC vezu
+     */
+    @Override
+    public Connection getConnection(String address, String port, String dbName, String user, String password) {
+        this.type = DatabaseType.MsSQL_JDBC;
+        this.driver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
+        this.address = address.trim();
+        this.dbName = dbName.trim();
+        this.port = port.trim();
+
+        if (this.port != null) {
+            this.fullAddress = this.address + ":" + port.trim();
+        } else {
+            this.fullAddress = address;
+        }
+
+        this.url = "jdbc:sqlserver://" + this.fullAddress + ";";
+
+        if (!isConnectionOpen()) {
+            this.user = user.trim();
+            this.password = password.trim();
+
+            try {
+
+
+                Properties properties = new Properties();
+                properties.put("databaseName", dbName.trim());
+                properties.put("user", this.user);
+                properties.put("password", this.password);
+                properties.put("trustServerCertificate", "true");
+                properties.put("integratedSecurity", "false");
+
+                conn = DriverManager.getConnection(url, properties);
+
+                return conn;
+            } catch (Exception e) {
+                throw new DatabaseException("Could not connect to the SQL Server database.", e);
+            }
+        }
+
+        return conn;
+    }
+}

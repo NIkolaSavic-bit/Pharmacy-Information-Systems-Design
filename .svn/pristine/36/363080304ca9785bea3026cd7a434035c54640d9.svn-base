@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PharmEase — O autorima</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            color: #172033;
+            background: #eef7fb;
+        }
+
+        .page {
+            width: min(960px, calc(100% - 32px));
+            margin: 40px auto;
+            overflow: hidden;
+            background: #ffffff;
+            border: 1px solid #c8dce7;
+            border-radius: 18px;
+            box-shadow: 0 14px 40px rgba(40, 82, 105, 0.13);
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 28px;
+            padding: 32px 40px;
+            background: #add8e6;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .brand img {
+            width: 92px;
+            height: 92px;
+            object-fit: contain;
+        }
+
+        .brand h1 {
+            margin: 0 0 5px;
+            font-size: 34px;
+        }
+
+        .brand p {
+            margin: 0;
+            font-size: 17px;
+        }
+
+        .faculty-logo {
+            width: 150px;
+            max-height: 92px;
+            object-fit: contain;
+        }
+
+        main {
+            padding: 38px 40px 44px;
+        }
+
+        .eyebrow {
+            margin: 0 0 8px;
+            color: #39758f;
+            font-weight: bold;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        h2 {
+            margin: 0 0 14px;
+            font-size: 27px;
+        }
+
+        .description {
+            max-width: 780px;
+            margin: 0;
+            color: #48566a;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .authors-title {
+            margin-top: 36px;
+        }
+
+        .authors {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .author {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            min-height: 78px;
+            padding: 16px 18px;
+            border: 1px solid #d8e8ef;
+            border-radius: 12px;
+            background: #f8fcfe;
+        }
+
+        .number {
+            display: grid;
+            flex: 0 0 40px;
+            width: 40px;
+            height: 40px;
+            place-items: center;
+            border-radius: 50%;
+            color: #172033;
+            background: #add8e6;
+            font-weight: bold;
+        }
+
+        .author strong {
+            display: block;
+            font-size: 17px;
+        }
+
+        .author span:not(.number) {
+            display: block;
+            margin-top: 4px;
+            color: #39758f;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .manager {
+            border-color: #76b8d1;
+            background: #edf8fc;
+        }
+
+        footer {
+            padding: 18px 40px;
+            color: #526477;
+            background: #f4f9fb;
+            border-top: 1px solid #d8e8ef;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        footer p {
+            margin: 4px 0;
+        }
+
+        @media (max-width: 680px) {
+            .page {
+                margin: 16px auto;
+            }
+
+            header {
+                align-items: flex-start;
+                padding: 26px 24px;
+            }
+
+            .brand img {
+                width: 72px;
+                height: 72px;
+            }
+
+            .brand h1 {
+                font-size: 27px;
+            }
+
+            .faculty-logo {
+                width: 95px;
+                max-height: 72px;
+            }
+
+            main {
+                padding: 30px 24px 34px;
+            }
+
+            .authors {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <header>
+            <div class="brand">
+                <img src="../icons/pharmease.png" alt="PharmEase logo">
+                <div>
+                    <h1>PharmEase</h1>
+                    <p>Informacioni sistem za lance apoteka</p>
+                </div>
+            </div>
+            <a href="http://etf.ues.rs.ba/"><img class="faculty-logo" src="../icons/etf.png" alt="Logo fakulteta"></a>
+        </header>
+
+        <main>
+            <p class="eyebrow">Projektovanje informacionih sistema — Grupa 4</p>
+            <h2 class="authors-title">Članovi grupe</h2>
+            <section class="authors" aria-label="Autori projekta">
+                <article class="author">
+                    <span class="number">1</span>
+                    <strong>Boris Borovčanin</strong>
+                </article>
+                <article class="author">
+                    <span class="number">2</span>
+                    <strong>Filip Konculić</strong>
+                </article>
+                <article class="author manager">
+                    <span class="number">3</span>
+                    <div>
+                        <strong>Nikola Savić</strong>
+                        <span>Project manager</span>
+                    </div>
+                </article>
+                <article class="author">
+                    <span class="number">4</span>
+                    <strong>Željana Šikimić</strong>
+                </article>
+            </section>
+
+            <h2 class="authors-title">O projektu</h2>
+            <p class="description">
+                PharmEase je informacioni sistem za podršku procesima
+                upravljanja, organizacije i operativnog rada lanca apoteka, uključujući izdavanje i
+                prodaju lijekova, nabavku i snabdijevanje.
+            </p>
+        </main>
+
+        <footer>
+            <p>Elektrotehnički fakultet, 2026.</p>
+        </footer>
+    </div>
+</body>
+</html>

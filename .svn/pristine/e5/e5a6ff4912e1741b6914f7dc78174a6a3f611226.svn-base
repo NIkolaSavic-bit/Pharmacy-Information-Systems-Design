@@ -1,0 +1,93 @@
+package view.menu;
+
+import java.awt.Desktop;
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.IOException;
+import javax.swing.ImageIcon;
+import javax.swing.JMenu;
+import javax.swing.JOptionPane;
+import javax.swing.KeyStroke;
+import view.menu.MenuItem;
+
+/**
+ * Predstavlja meni sa informacijama za pomoć.
+ */
+public class HelpMenu extends JMenu implements Menu {
+
+    private MenuItem aboutMenuItem = null;
+
+    /**
+     * Inicijalizuje objekat za rad u aplikaciji.
+     */
+    public HelpMenu() {
+        super("Pomoć");
+        setMnemonic(KeyEvent.VK_H);
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+
+        aboutMenuItem = new MenuItem("O autorima");
+        Image aboutIcon = toolkit.getImage("src/resources/icons/about.png");
+        aboutIcon = aboutIcon.getScaledInstance(16, 16, Image.SCALE_SMOOTH);
+        aboutMenuItem.setIcon(new ImageIcon(aboutIcon));
+        aboutMenuItem.setMnemonic(KeyEvent.VK_A);
+        aboutMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
+        aboutMenuItem.addActionListener(
+            new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        File htmlFile = new File("src/resources/help/Pharmease.html");
+                        if (htmlFile.exists()) {
+                            Desktop.getDesktop().browse(htmlFile.toURI());
+                        } else {
+                            JOptionPane.showMessageDialog(
+                                null,
+                                "Datoteka nije pronađena: " + htmlFile.getAbsolutePath()
+                            );
+                        }
+                    } catch (IOException ex) {
+                        JOptionPane.showMessageDialog(null, "Greška pri otvaranju stranice: " + ex.getMessage());
+                    }
+                }
+            }
+        );
+
+        add(aboutMenuItem);
+    }
+
+    /**
+     * Prilagođava kontrole stanju bez aktivne tabele.
+     */
+    @Override
+    public void idleState() {
+        aboutMenuItem.setEnabled(true);
+    }
+
+    /**
+     * Prilagođava kontrole stanju sa aktivnom tabelom.
+     */
+    @Override
+    public void activeState() {
+        aboutMenuItem.setEnabled(true);
+    }
+
+    /**
+     * Prilagođava kontrole unosu novog reda.
+     */
+    @Override
+    public void createState() {
+        aboutMenuItem.setEnabled(true);
+    }
+
+    /**
+     * Prilagođava kontrole izmjeni izabranog reda.
+     */
+    @Override
+    public void editState() {
+        aboutMenuItem.setEnabled(true);
+    }
+}

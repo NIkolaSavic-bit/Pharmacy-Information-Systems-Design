@@ -1,0 +1,29 @@
+package state;
+
+import java.util.HashMap;
+import model.ApplicationModel;
+
+public class ApplicationState {
+
+    protected ApplicationModel applicationModel;
+
+    public ApplicationState(ApplicationModel applicationModel) {
+        this.applicationModel = applicationModel;
+    }
+
+    public boolean getAllData() {
+        return applicationModel.getContext().getDataModel().getAllData();
+    }
+
+    public boolean deleteRow(HashMap<String, Object> columnPKs) {
+        return false;
+    }
+
+    public boolean addRow(HashMap<String, String> params) {
+        return false;
+    }
+
+    public boolean editRow(HashMap<String, String> params) {
+        return false;
+    }
+}

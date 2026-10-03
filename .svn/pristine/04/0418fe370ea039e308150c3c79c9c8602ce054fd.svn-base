@@ -1,0 +1,28 @@
+package command;
+
+import model.ApplicationModel;
+import state.ActiveState;
+import state.IdleState;
+
+public class ReadCommand extends Command {
+
+    private String tableName;
+
+    public ReadCommand(ApplicationModel applicationModel, String tableName) {
+        super(applicationModel);
+        this.tableName = tableName;
+    }
+
+    @Override
+    public boolean execute() {
+        this.applicationModel.changeState(new IdleState(this.applicationModel));
+        try {
+            this.applicationModel.getContext().setDataModel(tableName);
+            boolean loaded = this.applicationModel.getContext().getDataModel().getAllData();
+            if (loaded) this.applicationModel.changeState(new ActiveState(this.applicationModel));
+            return loaded;
+        } catch (RuntimeException e) {
+            return false;
+        }
+    }
+}

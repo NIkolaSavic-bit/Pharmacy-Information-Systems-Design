@@ -1,0 +1,12 @@
+package main;
+
+import model.ApplicationModel;
+import view.ViewInitializer;
+
+public class MainClass {
+
+    public static void main(String[] args) {
+        ApplicationModel applicationModel = new ApplicationModel();
+        new ViewInitializer(applicationModel);
+    }
+}

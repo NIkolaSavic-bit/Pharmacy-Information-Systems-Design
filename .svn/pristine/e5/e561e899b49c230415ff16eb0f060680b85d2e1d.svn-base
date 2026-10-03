@@ -1,0 +1,26 @@
+package metadata;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+public class TableAccessPolicy {
+
+    private static final String ADMIN_ROLE = "AS";
+    private final Map<String, Set<String>> roleTables = new HashMap<>();
+
+    public TableAccessPolicy() {
+    }
+
+    public boolean canAccess(String role, String tableName) {
+        if (ADMIN_ROLE.equals(role)) return true;
+        return roleTables.getOrDefault(role, Collections.emptySet()).contains(tableName);
+    }
+
+    private void allow(String role, String... tableNames) {
+        roleTables.put(role, new HashSet<>(Arrays.asList(tableNames)));
+    }
+}

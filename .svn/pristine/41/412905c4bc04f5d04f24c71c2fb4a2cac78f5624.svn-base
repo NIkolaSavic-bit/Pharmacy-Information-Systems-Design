@@ -1,0 +1,28 @@
+package command;
+
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import model.ApplicationModel;
+
+public class DeleteCommand extends Command {
+
+    private final HashMap<String, Object> primaryKeys;
+
+    public DeleteCommand(ApplicationModel applicationModel, Map<String, Object> primaryKeys) {
+        super(applicationModel);
+        this.primaryKeys = new LinkedHashMap<String, Object>(primaryKeys);
+    }
+
+    @Override
+    public boolean execute() {
+        if (primaryKeys.isEmpty()) return false;
+
+        boolean deleted = this.applicationModel.getApplicationState().deleteRow(primaryKeys);
+        if (!deleted) return false;
+
+        this.applicationModel.getApplicationState().getAllData();
+        this.applicationModel.notifySubscribers();
+        return true;
+    }
+}

@@ -1,0 +1,343 @@
+package view.component;
+
+import command.DeleteCommand;
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.util.*;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JToolBar;
+import javax.swing.JOptionPane;
+import metadata.TableColumnModel;
+import model.ApplicationModel;
+import observer.Subject;
+import observer.Subscriber;
+import state.ActiveState;
+import state.ApplicationState;
+import state.CreateState;
+import state.EditState;
+import view.report.JasperReportsViewer;
+
+/**
+ * Omogućava pokretanje operacija putem alatne trake.
+ */
+public class Toolbar extends JToolBar implements Subscriber {
+
+    private ApplicationModel applicationModel;
+    private JButton nextButton = null;
+    private JButton previousButton = null;
+    private JButton firstButton = null;
+    private JButton lastButton = null;
+    private JButton newButton = null;
+    private JButton editButton = null;
+    private JButton deleteButton = null;
+    private JButton acceptButton = null;
+    private JButton cancelButton = null;
+    private JButton reportButton = null;
+
+    /**
+     * Inicijalizuje objekat za rad u aplikaciji.
+     *
+     * @param table komponenta tabele povezana sa prikazom
+     * @param applicationModel centralni model aplikacije
+     * @param form forma povezana sa komponentom
+     */
+    public Toolbar(Table table, ApplicationModel applicationModel, Form form) {
+        this.applicationModel = applicationModel;
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+
+        setFloatable(false);
+
+        nextButton = new JButton();
+        Image nextIcon = toolkit.getImage("src/resources/icons/next.png").getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+        nextButton.setIcon(new ImageIcon(nextIcon));
+        nextButton.setToolTipText("Sledeće");
+        nextButton.addActionListener(e -> {
+            if (table != null) table.selectNextRow();
+        });
+
+        previousButton = new JButton();
+        Image previousIcon = toolkit
+            .getImage("src/resources/icons/previous.png")
+            .getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+        previousButton.setIcon(new ImageIcon(previousIcon));
+        previousButton.setToolTipText("Prethodno");
+        previousButton.addActionListener(e -> {
+            if (table != null) table.selectPreviousRow();
+        });
+
+        firstButton = new JButton();
+        Image firstIcon = toolkit
+            .getImage("src/resources/icons/first.png")
+            .getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+        firstButton.setIcon(new ImageIcon(firstIcon));
+        firstButton.setToolTipText("Prvo");
+        firstButton.addActionListener(e -> {
+            if (table != null) table.selectFirstRow();
+        });
+
+        lastButton = new JButton();
+        Image secondIcon = toolkit
+            .getImage("src/resources/icons/last.png")
+            .getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+        lastButton.setIcon(new ImageIcon(secondIcon));
+        lastButton.setToolTipText("Posljednje");
+        lastButton.addActionListener(e -> {
+            if (table != null) table.selectLastRow();
+        });
+
+        newButton = new JButton();
+        Image newIcon = toolkit.getImage("src/resources/icons/new.png").getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+        newButton.setIcon(new ImageIcon(newIcon));
+        newButton.setToolTipText("Novi zapis");
+        newButton.addActionListener(e -> {
+            if (form instanceof Form) {
+                CreateState createState = new CreateState(applicationModel);
+                applicationModel.changeState(createState);
+                generateForm((Form) form, table, createState);
+            }
+        });
+        editButton = new JButton();
+        Image editIcon = toolkit.getImage("src/resources/icons/edit.png").getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+        editButton.setIcon(new ImageIcon(editIcon));
+        editButton.setToolTipText("Uredi");
+        editButton.addActionListener(e -> {
+            if (form instanceof Form) {
+                EditState editState = new EditState(applicationModel);
+                generateForm((Form) form, table, editState);
+            }
+        });
+        deleteButton = new JButton();
+        Image deleteIcon = toolkit
+            .getImage("src/resources/icons/delete.png")
+            .getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+        deleteButton.setIcon(new ImageIcon(deleteIcon));
+        deleteButton.setToolTipText("Izbriši");
+        deleteButton.addActionListener(e -> deleteSelectedRecord(table));
+
+        acceptButton = new JButton();
+        Image acceptIcon = toolkit
+            .getImage("src/resources/icons/accept.png")
+            .getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+        acceptButton.setIcon(new ImageIcon(acceptIcon));
+        acceptButton.addActionListener(e -> {
+            if (form instanceof Form) {
+                ((Form) form).submit();
+            }
+        });
+        acceptButton.setToolTipText("Prihvati");
+
+        cancelButton = new JButton();
+        Image cancelIcon = toolkit
+            .getImage("src/resources/icons/cancel.png")
+            .getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+        cancelButton.setIcon(new ImageIcon(cancelIcon));
+        cancelButton.addActionListener(e -> {
+            if (form instanceof Form) {
+                ((Form) form).cancel();
+            }
+        });
+        cancelButton.setToolTipText("Otkaži");
+
+        reportButton = new JButton();
+        Image reportIcon = toolkit
+            .getImage("src/resources/icons/report.png")
+            .getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+        reportButton.setIcon(new ImageIcon(reportIcon));
+        reportButton.setToolTipText("Izvještaj");
+        reportButton.addActionListener(e -> {
+            if (table != null && table.getCustomTable() != null) {
+                new JasperReportsViewer().showTableReport(
+                    table.getCustomTable().getTable(),
+                    table.getSelectedTableName()
+                );
+            }
+        });
+
+        addAllButtons();
+        applyState();
+    }
+
+    /**
+     * Prilagođava kontrole stanju bez aktivne tabele.
+     */
+    public void idleState() {
+        nextButton.setEnabled(false);
+        previousButton.setEnabled(false);
+        firstButton.setEnabled(false);
+        lastButton.setEnabled(false);
+        newButton.setEnabled(false);
+        editButton.setEnabled(false);
+        deleteButton.setEnabled(false);
+        acceptButton.setEnabled(false);
+        cancelButton.setEnabled(false);
+        reportButton.setEnabled(false);
+    }
+
+    /**
+     * Prilagođava kontrole stanju sa aktivnom tabelom.
+     */
+    public void activeState() {
+        nextButton.setEnabled(true);
+        previousButton.setEnabled(true);
+        firstButton.setEnabled(true);
+        lastButton.setEnabled(true);
+        newButton.setEnabled(true);
+        editButton.setEnabled(true);
+        deleteButton.setEnabled(true);
+        acceptButton.setEnabled(false);
+        cancelButton.setEnabled(false);
+        reportButton.setEnabled(true);
+    }
+
+    /**
+     * Prilagođava kontrole unosu novog reda.
+     */
+    public void createState() {
+        nextButton.setEnabled(false);
+        previousButton.setEnabled(false);
+        firstButton.setEnabled(false);
+        lastButton.setEnabled(false);
+        newButton.setEnabled(false);
+        editButton.setEnabled(false);
+        deleteButton.setEnabled(false);
+        acceptButton.setEnabled(true);
+        cancelButton.setEnabled(true);
+        reportButton.setEnabled(false);
+    }
+
+    /**
+     * Prilagođava kontrole izmjeni izabranog reda.
+     */
+    public void editState() {
+        nextButton.setEnabled(false);
+        previousButton.setEnabled(false);
+        firstButton.setEnabled(false);
+        lastButton.setEnabled(false);
+        newButton.setEnabled(false);
+        editButton.setEnabled(false);
+        deleteButton.setEnabled(false);
+        acceptButton.setEnabled(true);
+        cancelButton.setEnabled(true);
+        reportButton.setEnabled(false);
+    }
+
+    private void addAllButtons() {
+        add(firstButton);
+        add(previousButton);
+        add(nextButton);
+        add(lastButton);
+        addSeparator();
+        add(newButton);
+        add(editButton);
+        add(deleteButton);
+        addSeparator();
+        add(acceptButton);
+        add(cancelButton);
+        addSeparator();
+        add(reportButton);
+    }
+
+    private void applyState() {
+        if (applicationModel.getApplicationState() instanceof EditState) {
+            this.editState();
+        } else if (applicationModel.getApplicationState() instanceof CreateState) {
+            this.createState();
+        } else if (applicationModel.getApplicationState() instanceof ActiveState) {
+            this.activeState();
+        } else {
+            this.idleState();
+        }
+    }
+
+    private void generateForm(Form form, Table table, ApplicationState state) {
+        if (state instanceof CreateState) {
+            form.setVisible(true);
+            form.renderForm(this.applicationModel, state, null, null, table);
+            return;
+        }
+
+        if (
+            table == null ||
+            table.getCustomTable() == null ||
+            table.getSelectedRow() < 0 ||
+            table.getSelectedRow() >= this.applicationModel.getContext().getDataModel().getData().size()
+        ) {
+            javax.swing.JOptionPane.showMessageDialog(null, "Izaberite zapis koji želite da uredite.");
+            return;
+        }
+
+        applicationModel.changeState(state);
+        form.setVisible(true);
+        int rowIndex = table.getCustomTable().getSelectedRowIndex();
+        List<TableColumnModel> tableColumns = this.applicationModel.getContext().getDataModel().getColumns();
+        List<Object> tableData = this.applicationModel.getContext().getDataModel().getData().get(rowIndex);
+        HashMap<String, Object> primaryKeys = new LinkedHashMap<String, Object>();
+
+        for (int i = 0; i < tableColumns.size(); i++) {
+            if (tableColumns.get(i).isPrimaryKey()) {
+                primaryKeys.put(tableColumns.get(i).getColumType() + i, tableData.get(i));
+            }
+        }
+
+        form.renderForm(
+            this.applicationModel,
+            state,
+            rowIndex,
+            primaryKeys.keySet() != null ? applicationModel.getContext().getDataModel().getRowById(primaryKeys) : null,
+            table
+        );
+    }
+
+    private void deleteSelectedRecord(Table table) {
+        if (
+            table == null ||
+            table.getSelectedRow() < 0 ||
+            table.getSelectedRow() >= applicationModel.getContext().getDataModel().getData().size()
+        ) {
+            JOptionPane.showMessageDialog(null, "Izaberite zapis koji želite da obrišete.");
+            return;
+        }
+
+        int response = JOptionPane.showConfirmDialog(
+            null,
+            "Da li ste sigurni da želite da obrišete ovaj podatak?",
+            "Potvrda brisanja",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE
+        );
+        if (response != JOptionPane.YES_OPTION) return;
+
+        int rowIndex = table.getSelectedRow();
+        List<TableColumnModel> columns = applicationModel.getContext().getDataModel().getColumns();
+        List<Object> row = applicationModel.getContext().getDataModel().getData().get(rowIndex);
+        HashMap<String, Object> primaryKeys = new LinkedHashMap<>();
+
+        for (int index = 0; index < columns.size(); index++) {
+            if (columns.get(index).isPrimaryKey()) {
+                primaryKeys.put(columns.get(index).getColumType() + index, row.get(index));
+            }
+        }
+
+        if (new DeleteCommand(applicationModel, primaryKeys).execute()) {
+            JOptionPane.showMessageDialog(null, "Podatak je uspješno obrisan!");
+        } else {
+            JOptionPane.showMessageDialog(null, "Brisanje podatka nije uspjelo.", "Greška", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /**
+     * Obrađuje obavještenje o promjeni.
+     *
+     * @param applicationModel centralni model aplikacije
+     */
+    @Override
+    public void update(Subject applicationModel) {
+        this.applicationModel = (ApplicationModel) applicationModel;
+
+        applyState();
+
+        repaint();
+        revalidate();
+    }
+}

@@ -1,0 +1,29 @@
+package view.renderer;
+
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.tree.*;
+
+public class TreeCellRenderer extends DefaultTreeCellRenderer {
+
+    @Override
+    public Component getTreeCellRendererComponent(
+        JTree tree,
+        Object value,
+        boolean selected,
+        boolean expanded,
+        boolean leaf,
+        int row,
+        boolean hasFocus
+    ) {
+        super.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);
+
+        String nodeText = value.toString();
+        Image imageRegion = new ImageIcon("src/resources/icons/" + nodeText + ".png").getImage();
+        Image scaledImageRegion = imageRegion.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        ImageIcon regionIcon = new ImageIcon(scaledImageRegion);
+        setIcon(regionIcon);
+
+        return this;
+    }
+}

@@ -1,0 +1,10 @@
+package metadata;
+
+import java.util.HashMap;
+import java.util.List;
+import metadata.TableColumnModel;
+
+public interface Strategy {
+    public List<TableColumnModel> parseDataModel(String tableName);
+    public HashMap<String, String> parseCrudOperations(String tableName);
+}

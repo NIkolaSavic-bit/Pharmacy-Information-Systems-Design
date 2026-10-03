@@ -1,0 +1,15 @@
+package command;
+
+import model.ApplicationModel;
+
+public abstract class Command {
+
+    protected ApplicationModel applicationModel;
+
+    public abstract boolean execute();
+
+    public Command(ApplicationModel applicationModel) {
+        this.applicationModel = applicationModel;
+    }
+
+}
